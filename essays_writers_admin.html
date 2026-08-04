@@ -1,0 +1,2933 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Essays Writers - Admin Portal</title>
+    <!-- Google Fonts: Outfit -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+/* ==========================================================================
+   ESSAYS WRITERS - PREMIUM DESIGN STYLESHEET
+   ========================================================================== */
+
+/* Design Tokens & Variables */
+:root {
+    --bg-main: #07070a;
+    --bg-panel: rgba(15, 15, 22, 0.7);
+    --bg-panel-solid: #0f0f16;
+    --border-color: rgba(255, 255, 255, 0.08);
+    --border-hover: rgba(255, 255, 255, 0.15);
+    
+    /* Brand Colors */
+    --color-primary: #6366f1;
+    --color-primary-hover: #4f46e5;
+    --color-secondary: #a855f7;
+    --color-secondary-hover: #9333ea;
+    
+    /* Semantic Colors */
+    --color-success: #10b981;
+    --color-warning: #f59e0b;
+    --color-danger: #f43f5e;
+    --color-info: #0ea5e9;
+    --color-purple: #c084fc;
+    
+    /* Text Colors */
+    --text-main: #f3f4f6;
+    --text-muted: #9ca3af;
+    --text-dark: #1f2937;
+    
+    /* Fonts & Radii */
+    --font-primary: 'Outfit', sans-serif;
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 18px;
+    --radius-full: 9999px;
+    
+    /* Transitions */
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --shadow-main: 0 10px 30px -10px rgba(0, 0, 0, 0.7);
+}
+
+/* Base Reset & Styling */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-color: var(--bg-main);
+    background-image: 
+        radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.1) 0px, transparent 50%),
+        radial-gradient(at 100% 100%, rgba(168, 85, 247, 0.08) 0px, transparent 50%);
+    background-attachment: fixed;
+    color: var(--text-main);
+    font-family: var(--font-primary);
+    font-size: 15px;
+    line-height: 1.5;
+    overflow-x: hidden;
+    height: 100vh;
+}
+
+/* Custom Scrollbars */
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.2);
+}
+::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: var(--radius-full);
+}
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+/* Helpers */
+.hidden {
+    display: none !important;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.mt-3 {
+    margin-top: 1.5rem;
+}
+
+.font-medium {
+    font-weight: 500;
+}
+
+.font-bold {
+    font-weight: 700;
+}
+
+/* Text Colors */
+.text-indigo { color: var(--color-primary); }
+.text-emerald { color: var(--color-success); }
+.text-warning { color: var(--color-warning); }
+.text-danger { color: var(--color-danger); }
+.success-text { color: var(--color-success); }
+
+/* Glassmorphism Panel Template */
+.glass-panel {
+    background: var(--bg-panel);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-main);
+}
+
+/* Glow Card Accents */
+.glow-purple {
+    position: relative;
+}
+.glow-purple::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    border-radius: inherit;
+    box-shadow: 0 0 20px rgba(168, 85, 247, 0.15);
+    pointer-events: none;
+    opacity: 0.6;
+    transition: var(--transition-smooth);
+}
+.glow-blue::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    border-radius: inherit;
+    box-shadow: 0 0 20px rgba(99, 102, 241, 0.15);
+    pointer-events: none;
+    opacity: 0.6;
+    transition: var(--transition-smooth);
+}
+.glow-emerald::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    border-radius: inherit;
+    box-shadow: 0 0 20px rgba(16, 185, 129, 0.15);
+    pointer-events: none;
+    opacity: 0.6;
+    transition: var(--transition-smooth);
+}
+
+/* Buttons */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-family: inherit;
+    font-size: 0.9rem;
+    font-weight: 600;
+    padding: 10px 20px;
+    border-radius: var(--radius-sm);
+    border: none;
+    cursor: pointer;
+    transition: var(--transition-smooth);
+}
+
+.btn:active {
+    transform: scale(0.97);
+}
+
+.btn-block {
+    display: flex;
+    width: 100%;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+    color: #fff;
+    box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+}
+.btn-primary:hover {
+    background: linear-gradient(135deg, var(--color-primary-hover), var(--color-secondary-hover));
+    box-shadow: 0 6px 20px rgba(99, 102, 241, 0.5);
+    transform: translateY(-1px);
+}
+
+.btn-secondary {
+    background: linear-gradient(135deg, var(--color-secondary), var(--color-primary));
+    color: #fff;
+    box-shadow: 0 4px 15px rgba(168, 85, 247, 0.3);
+}
+.btn-secondary:hover {
+    background: linear-gradient(135deg, var(--color-secondary-hover), var(--color-primary-hover));
+    box-shadow: 0 6px 20px rgba(168, 85, 247, 0.5);
+    transform: translateY(-1px);
+}
+
+.btn-outline {
+    background: transparent;
+    border: 1px solid var(--border-color);
+    color: var(--text-main);
+}
+.btn-outline:hover {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: var(--border-hover);
+}
+
+.btn-emerald {
+    background: var(--color-success);
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
+}
+.btn-emerald:hover {
+    background: #0d9488;
+    transform: translateY(-1px);
+}
+
+.btn-warning {
+    background: var(--color-warning);
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(245, 158, 11, 0.2);
+}
+.btn-warning:hover {
+    background: #d97706;
+    transform: translateY(-1px);
+}
+
+.btn-danger {
+    background: var(--color-danger);
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(244, 63, 94, 0.2);
+}
+.btn-danger:hover {
+    background: #e11d48;
+    transform: translateY(-1px);
+}
+
+/* ==================== AUTH LAYOUT ==================== */
+.auth-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+.auth-card {
+    width: 100%;
+    max-width: 480px;
+    padding: 40px;
+    animation: fadeIn 0.5s ease-out;
+}
+
+.auth-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.logo-text {
+    font-size: 2.2rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, #fff, #9ca3af);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    letter-spacing: -0.5px;
+    margin-bottom: 6px;
+}
+
+.auth-header p {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+}
+
+.auth-tabs {
+    display: flex;
+    background: rgba(0, 0, 0, 0.3);
+    padding: 4px;
+    border-radius: var(--radius-sm);
+    margin-bottom: 25px;
+}
+
+.auth-tab {
+    flex: 1;
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    padding: 10px;
+    font-family: inherit;
+    font-weight: 600;
+    font-size: 0.85rem;
+    cursor: pointer;
+    border-radius: calc(var(--radius-sm) - 2px);
+    transition: var(--transition-smooth);
+}
+
+.auth-tab.active {
+    background: var(--bg-panel-solid);
+    color: #fff;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+}
+
+.auth-form {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    animation: slideIn 0.3s ease-out;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.form-group label {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--text-muted);
+    letter-spacing: 0.5px;
+}
+
+.form-group input, 
+.form-group select, 
+.form-group textarea {
+    background: rgba(0, 0, 0, 0.25);
+    border: 1px solid var(--border-color);
+    padding: 12px 16px;
+    border-radius: var(--radius-sm);
+    color: #fff;
+    font-family: inherit;
+    font-size: 0.95rem;
+    transition: var(--transition-smooth);
+}
+
+.form-group input:focus, 
+.form-group select:focus, 
+.form-group textarea:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 10px rgba(99, 102, 241, 0.2);
+}
+
+.form-group textarea {
+    resize: none;
+}
+
+.form-group input.input-disabled {
+    background: rgba(255, 255, 255, 0.03);
+    border-color: rgba(255, 255, 255, 0.05);
+    cursor: not-allowed;
+    color: var(--text-muted);
+}
+
+.forgot-pwd-link-wrapper {
+    text-align: right;
+}
+
+.text-link {
+    color: var(--color-primary);
+    font-size: 0.85rem;
+    text-decoration: none;
+    font-weight: 600;
+}
+.text-link:hover {
+    color: var(--color-secondary);
+    text-decoration: underline;
+}
+
+.back-to-login {
+    text-align: center;
+    margin-top: 15px;
+}
+
+.form-description {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    text-align: center;
+    line-height: 1.4;
+}
+
+/* ==================== PORTAL WRAPPER LAYOUT ==================== */
+.portal-container {
+    display: flex;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+}
+
+/* Sidebar Styling */
+.sidebar {
+    width: 260px;
+    background: #0b0b10;
+    border-right: 1px solid var(--border-color);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    flex-shrink: 0;
+}
+
+.sidebar-header {
+    padding: 24px 20px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.logo-title {
+    display: block;
+    font-size: 1.35rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, #fff, #c3c4ca);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    letter-spacing: -0.5px;
+}
+
+.portal-badge {
+    display: inline-block;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 3px 8px;
+    background: rgba(99, 102, 241, 0.15);
+    border: 1px solid rgba(99, 102, 241, 0.3);
+    color: var(--color-purple);
+    border-radius: var(--radius-full);
+    margin-top: 4px;
+}
+
+.sidebar-nav {
+    flex: 1;
+    padding: 20px 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    overflow-y: auto;
+}
+
+.nav-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    border-radius: var(--radius-sm);
+    color: var(--text-muted);
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.95rem;
+    transition: var(--transition-smooth);
+}
+
+.nav-item i {
+    width: 18px;
+    height: 18px;
+    stroke-width: 2px;
+}
+
+.nav-item:hover {
+    color: #fff;
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.nav-item.active {
+    color: #fff;
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.15), rgba(168, 85, 247, 0.05));
+    border: 1px solid rgba(99, 102, 241, 0.25);
+    box-shadow: 0 4px 15px rgba(99, 102, 241, 0.05);
+}
+
+.sidebar-footer {
+    padding: 20px 14px;
+    border-top: 1px solid var(--border-color);
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.btn-create-task {
+    background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+    color: #fff;
+    font-weight: 700;
+    width: 100%;
+    padding: 12px;
+    border-radius: var(--radius-sm);
+    box-shadow: 0 4px 15px rgba(99, 102, 241, 0.25);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    cursor: pointer;
+    border: none;
+    transition: var(--transition-smooth);
+}
+.btn-create-task:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
+}
+
+.user-profile-widget {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid var(--border-color);
+    padding: 10px;
+    border-radius: var(--radius-sm);
+}
+
+.user-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: var(--radius-full);
+    background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.9rem;
+}
+
+.user-info {
+    flex: 1;
+    overflow: hidden;
+}
+
+.username {
+    font-size: 0.85rem;
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.user-role {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.btn-logout {
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: var(--transition-smooth);
+}
+.btn-logout:hover {
+    color: var(--color-danger);
+}
+
+/* Main Content Area */
+.main-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    background: #07070a;
+}
+
+.main-header {
+    height: 70px;
+    padding: 0 30px;
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-shrink: 0;
+}
+
+.page-title {
+    font-size: 1.35rem;
+    font-weight: 700;
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.header-stat {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid var(--border-color);
+    padding: 6px 12px;
+    border-radius: var(--radius-sm);
+    font-size: 0.85rem;
+}
+
+.stat-label {
+    color: var(--text-muted);
+}
+
+.stat-value {
+    font-weight: 700;
+}
+
+.tab-content-container {
+    flex: 1;
+    overflow-y: auto;
+    padding: 30px;
+}
+
+.tab-pane {
+    animation: fadeIn 0.4s ease-out;
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+    min-height: 100%;
+}
+
+/* ==================== DASHBOARD PAGES ==================== */
+.dashboard-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 20px;
+}
+
+.stat-card {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 24px;
+}
+
+.stat-icon-wrapper {
+    width: 48px;
+    height: 48px;
+    border-radius: var(--radius-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.stat-icon-wrapper i {
+    width: 24px;
+    height: 24px;
+}
+
+.stat-icon-wrapper.purple { background: rgba(168, 85, 247, 0.15); color: var(--color-purple); }
+.stat-icon-wrapper.blue { background: rgba(99, 102, 241, 0.15); color: var(--color-primary); }
+.stat-icon-wrapper.emerald { background: rgba(16, 185, 129, 0.15); color: var(--color-success); }
+
+.stat-details {
+    display: flex;
+    flex-direction: column;
+}
+
+.card-label {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+}
+
+.card-number {
+    font-size: 1.7rem;
+    font-weight: 700;
+}
+
+.dashboard-sections {
+    display: flex;
+    gap: 24px;
+    flex-wrap: wrap;
+}
+
+.flex-1 { flex: 1; min-width: 300px; }
+.flex-2 { flex: 2; min-width: 480px; }
+
+.dashboard-card {
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.card-header h3 {
+    font-size: 1.1rem;
+    font-weight: 700;
+}
+
+/* Tables styling */
+.table-container {
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+}
+
+th {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+td {
+    padding: 16px;
+    border-bottom: 1px solid var(--border-color);
+    font-size: 0.9rem;
+}
+
+tr:hover td {
+    background: rgba(255, 255, 255, 0.01);
+}
+
+.announcement-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.announcement-item {
+    border-left: 3px solid var(--color-primary);
+    padding-left: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.ann-date {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}
+
+.ann-title {
+    font-weight: 600;
+    font-size: 0.95rem;
+}
+
+.announcement-item p {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+}
+
+/* ==================== TASKS BOARD GRID ==================== */
+.filter-bar {
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.search-box {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid var(--border-color);
+    padding: 8px 14px;
+    border-radius: var(--radius-sm);
+    width: 320px;
+}
+
+.search-box input {
+    background: transparent;
+    border: none;
+    color: #fff;
+    width: 100%;
+}
+.search-box input:focus {
+    outline: none;
+}
+
+.filter-actions {
+    display: flex;
+    gap: 12px;
+}
+
+.filter-actions select {
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid var(--border-color);
+    padding: 8px 12px;
+    border-radius: var(--radius-sm);
+    color: #fff;
+}
+
+.tasks-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 20px;
+}
+
+/* Premium Task Cards */
+.task-card {
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 18px;
+    transition: var(--transition-smooth);
+}
+
+.task-card:hover {
+    border-color: rgba(99, 102, 241, 0.3);
+    transform: translateY(-2px);
+}
+
+.task-card-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.task-order-tag {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--text-muted);
+}
+
+.task-title {
+    font-size: 1.05rem;
+    font-weight: 700;
+    margin-top: 4px;
+    line-height: 1.3;
+}
+
+.status-badge {
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 4px 8px;
+    border-radius: 4px;
+}
+
+.status-badge.available { background: rgba(14, 165, 233, 0.15); color: var(--color-info); border: 1px solid rgba(14, 165, 233, 0.3); }
+.status-badge.in_progress { background: rgba(245, 158, 11, 0.15); color: var(--color-warning); border: 1px solid rgba(245, 158, 11, 0.3); }
+.status-badge.in_review { background: rgba(168, 85, 247, 0.15); color: var(--color-purple); border: 1px solid rgba(168, 85, 247, 0.3); }
+.status-badge.in_revision { background: rgba(244, 63, 94, 0.15); color: var(--color-danger); border: 1px solid rgba(244, 63, 94, 0.3); }
+.status-badge.completed { background: rgba(16, 185, 129, 0.15); color: var(--color-success); border: 1px solid rgba(16, 185, 129, 0.3); }
+.status-badge.cancelled { background: rgba(156, 163, 175, 0.15); color: var(--text-muted); border: 1px solid rgba(156, 163, 175, 0.3); }
+.status-badge.claimed { background: rgba(236, 72, 153, 0.15); color: #ec4899; border: 1px solid rgba(236, 72, 153, 0.3); }
+
+.task-meta-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    background: rgba(255,255,255,0.01);
+    border: 1px solid rgba(255,255,255,0.04);
+    padding: 10px;
+    border-radius: var(--radius-sm);
+    font-size: 0.8rem;
+}
+
+.task-meta-item {
+    display: flex;
+    flex-direction: column;
+}
+
+.meta-label {
+    color: var(--text-muted);
+}
+
+.meta-val {
+    font-weight: 600;
+}
+
+.task-deadline-box {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+.task-card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 10px;
+}
+
+.task-price {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--color-success);
+}
+
+/* ==================== WORK SUBMISSION & REVIEW ==================== */
+.review-details-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 20px;
+}
+
+.review-meta-label {
+    display: block;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    font-weight: 500;
+    margin-bottom: 4px;
+}
+
+.divider {
+    border: none;
+    border-bottom: 1px solid var(--border-color);
+    margin: 20px 0;
+}
+
+.review-submission-box {
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    padding: 16px;
+}
+
+.submission-text-view {
+    font-family: inherit;
+    white-space: pre-wrap;
+    background: rgba(0, 0, 0, 0.1);
+    padding: 12px;
+    border-radius: 4px;
+    color: var(--text-main);
+    font-size: 0.9rem;
+    border: 1px solid var(--border-color);
+    max-height: 250px;
+    overflow-y: auto;
+}
+
+/* ==================== MY ORDERS PAGE ==================== */
+.orders-container {
+    height: 100%;
+}
+.orders-grid-layout {
+    display: grid;
+    grid-template-columns: 240px 1fr;
+    gap: 25px;
+}
+
+.orders-sidebar {
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    align-self: flex-start;
+}
+
+.orders-sidebar-header {
+    font-weight: 700;
+    font-size: 0.95rem;
+    color: var(--text-muted);
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 10px;
+}
+
+.orders-filter-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.order-filter-btn {
+    text-align: left;
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    padding: 10px 14px;
+    border-radius: var(--radius-sm);
+    font-family: inherit;
+    font-weight: 500;
+    cursor: pointer;
+    transition: var(--transition-smooth);
+}
+.order-filter-btn:hover {
+    color: #fff;
+    background: rgba(255, 255, 255, 0.02);
+}
+.order-filter-btn.active {
+    color: #fff;
+    background: rgba(255, 255, 255, 0.05);
+    border-left: 3px solid var(--color-primary);
+}
+
+/* ==================== CHAT WORKSPACE ==================== */
+.chat-wrapper {
+    display: flex;
+    height: calc(100vh - 190px);
+    overflow: hidden;
+}
+
+.chat-sidebar {
+    width: 280px;
+    border-right: 1px solid var(--border-color);
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+}
+
+.chat-sidebar-header {
+    padding: 16px 20px;
+    font-weight: 600;
+    border-bottom: 1px solid var(--border-color);
+    font-size: 0.9rem;
+}
+
+.chat-list {
+    flex: 1;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+.chat-list-item {
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border-color);
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    transition: var(--transition-smooth);
+}
+.chat-list-item:hover {
+    background: rgba(255, 255, 255, 0.02);
+}
+.chat-list-item.active {
+    background: rgba(99, 102, 241, 0.08);
+    border-left: 3px solid var(--color-primary);
+}
+
+.chat-item-title {
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.chat-item-subtitle {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    display: flex;
+    justify-content: space-between;
+}
+
+.chat-main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    background: rgba(0, 0, 0, 0.1);
+}
+
+.chat-main.full-width {
+    width: 100%;
+}
+
+.chat-header {
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.chat-header-info h4 {
+    font-size: 0.95rem;
+    font-weight: 700;
+}
+
+.user-status-online {
+    font-size: 0.75rem;
+    color: var(--color-success);
+}
+
+.chat-messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.chat-bubble {
+    max-width: 70%;
+    padding: 12px 16px;
+    border-radius: var(--radius-sm);
+    font-size: 0.9rem;
+    line-height: 1.4;
+}
+
+.chat-bubble.sent {
+    background: var(--color-primary);
+    color: #fff;
+    align-self: flex-end;
+    border-bottom-right-radius: 2px;
+}
+
+.chat-bubble.received {
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--text-main);
+    align-self: flex-start;
+    border-bottom-left-radius: 2px;
+    border: 1px solid var(--border-color);
+}
+
+.chat-time {
+    display: block;
+    font-size: 0.7rem;
+    color: rgba(255, 255, 255, 0.5);
+    margin-top: 4px;
+    text-align: right;
+}
+
+.chat-bubble.received .chat-time {
+    color: var(--text-muted);
+}
+
+.chat-input-bar {
+    padding: 16px 20px;
+    border-top: 1px solid var(--border-color);
+    display: flex;
+    gap: 12px;
+}
+
+.chat-input-bar input {
+    flex: 1;
+    background: rgba(0, 0, 0, 0.25);
+    border: 1px solid var(--border-color);
+    padding: 12px 16px;
+    border-radius: var(--radius-sm);
+    color: #fff;
+    font-family: inherit;
+}
+.chat-input-bar input:focus {
+    outline: none;
+    border-color: var(--color-primary);
+}
+
+.chat-empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    gap: 12px;
+    color: var(--text-muted);
+}
+
+.large-icon {
+    width: 48px;
+    height: 48px;
+    stroke-width: 1.5px;
+}
+
+/* ==================== BALANCE & LEDGER ==================== */
+.balance-grid {
+    display: grid;
+    grid-template-columns: 320px 1fr;
+    gap: 25px;
+}
+
+.balance-sidebar {
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.balance-card {
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.15), rgba(16, 185, 129, 0.05));
+    border: 1px solid rgba(99, 102, 241, 0.2);
+    padding: 24px;
+    border-radius: var(--radius-md);
+}
+
+.balance-label {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+}
+
+.balance-amount {
+    font-size: 2.2rem;
+    font-weight: 800;
+    color: var(--color-success);
+    margin: 8px 0;
+}
+
+.balance-subtext {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}
+
+.withdrawal-form h3 {
+    font-size: 1rem;
+    margin-bottom: 12px;
+}
+
+.balance-main {
+    padding: 24px;
+}
+
+.balance-main h3 {
+    margin-bottom: 16px;
+}
+
+/* ==================== ADMIN PAGES ==================== */
+/* User Control page table profiles */
+.user-status-active {
+    background: rgba(16, 185, 129, 0.1);
+    color: var(--color-success);
+    border: 1px solid rgba(16, 185, 129, 0.2);
+    font-size: 0.75rem;
+    padding: 2px 6px;
+    border-radius: 4px;
+}
+
+/* Horizontal tabs for Manage Tasks page */
+.horizontal-nav-tabs {
+    display: flex;
+    padding: 6px;
+    gap: 6px;
+    border-radius: var(--radius-md);
+    overflow-x: auto;
+}
+
+.h-tab-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    padding: 10px 16px;
+    font-family: inherit;
+    font-weight: 600;
+    font-size: 0.85rem;
+    cursor: pointer;
+    border-radius: var(--radius-sm);
+    white-space: nowrap;
+    transition: var(--transition-smooth);
+}
+.h-tab-btn:hover {
+    color: #fff;
+    background: rgba(255, 255, 255, 0.03);
+}
+.h-tab-btn.active {
+    background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+    color: #fff;
+    box-shadow: 0 4px 10px rgba(99, 102, 241, 0.2);
+}
+
+.manage-tasks-content {
+    margin-top: 10px;
+}
+
+/* Pending Claims Card view */
+.claims-dashboard {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.claim-order-card {
+    padding: 24px;
+}
+
+.claim-order-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 12px;
+}
+
+.claim-order-header h4 {
+    font-size: 1.05rem;
+}
+
+.claim-list-section {
+    margin-top: 16px;
+}
+
+.claim-list-header {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+.claimant-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.15);
+    border: 1px solid var(--border-color);
+    padding: 10px 16px;
+    border-radius: var(--radius-sm);
+    margin-bottom: 8px;
+}
+
+.claimant-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.claimant-name {
+    font-weight: 600;
+}
+
+.claimant-stats {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}
+
+/* ==================== MODALS LAYOUT ==================== */
+.modal-overlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0, 0, 0, 0.65);
+    backdrop-filter: blur(8px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+    padding: 16px;
+    overflow-y: auto;
+}
+
+.modal-card {
+    width: 100%;
+    max-width: 580px;
+    display: flex;
+    flex-direction: column;
+    max-height: 90vh;
+}
+
+.modal-card.large-modal {
+    max-width: 780px;
+}
+
+.modal-header {
+    padding: 20px 24px;
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.modal-header h3 {
+    font-size: 1.15rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.modal-close-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    font-size: 1.5rem;
+    cursor: pointer;
+    transition: var(--transition-smooth);
+}
+.modal-close-btn:hover {
+    color: var(--color-danger);
+}
+
+.modal-body {
+    padding: 24px;
+    flex: 1;
+    overflow-y: auto;
+    min-height: 0;
+}
+
+.modal-body.scrollable-y {
+    overflow-y: auto;
+}
+
+.form-grid {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 16px;
+}
+
+.form-grid .form-group {
+    flex: 1;
+}
+
+.form-grid.page-calculation-row {
+    background: rgba(99, 102, 241, 0.05);
+    border: 1px solid rgba(99, 102, 241, 0.15);
+    padding: 14px;
+    border-radius: var(--radius-sm);
+    margin-bottom: 18px;
+}
+
+.modal-footer {
+    padding: 16px 24px;
+    border-top: 1px solid var(--border-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modal-footer.flex-end {
+    justify-content: flex-end;
+    gap: 12px;
+}
+
+/* Toast Notifications */
+.toast-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.toast {
+    min-width: 280px;
+    max-width: 400px;
+    padding: 14px 20px;
+    border-radius: var(--radius-sm);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+    animation: slideInRight 0.3s ease-out;
+}
+
+.toast.success { background: var(--color-success); border-left: 4px solid #047857; }
+.toast.error { background: var(--color-danger); border-left: 4px solid #be123c; }
+.toast.info { background: var(--color-info); border-left: 4px solid #0369a1; }
+.toast.warning { background: var(--color-warning); border-left: 4px solid #b45309; }
+
+/* Developer Helper panel */
+.dev-helper-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 48px;
+    background: #09090c;
+    border-top: 1px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
+    gap: 15px;
+    font-size: 0.8rem;
+    z-index: 99;
+}
+
+.dev-title {
+    font-weight: 700;
+    color: var(--color-purple);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.dev-selectors {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.dev-label {
+    color: var(--text-muted);
+}
+
+.dev-btn {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid var(--border-color);
+    color: var(--text-main);
+    padding: 4px 8px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+.dev-btn:hover {
+    background: rgba(255,255,255,0.1);
+}
+
+.dev-btn.btn-admin { border-color: rgba(168, 85, 247, 0.4); color: var(--color-purple); }
+.dev-btn.btn-writer { border-color: rgba(99, 102, 241, 0.4); color: #818cf8; }
+.dev-btn.btn-reset { border-color: rgba(244, 63, 94, 0.4); color: var(--color-danger); }
+
+.dev-divider {
+    width: 1px;
+    height: 20px;
+    background: var(--border-color);
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideIn {
+    from { transform: translateY(10px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes slideInRight {
+    from { transform: translateX(100%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+}
+
+.scale-up-in {
+    animation: scaleUpIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes scaleUpIn {
+    from { transform: scale(0.9); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+
+/* Sidebar Nav Pill Badges & Count Indicators */
+.nav-badge {
+    margin-left: auto;
+    background: rgba(99, 102, 241, 0.2);
+    color: var(--color-primary);
+    border: 1px solid rgba(99, 102, 241, 0.3);
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: var(--radius-full);
+    min-width: 20px;
+    text-align: center;
+    line-height: 1.2;
+}
+
+.nav-badge.badge-amber {
+    background: rgba(245, 158, 11, 0.2);
+    color: var(--color-warning);
+    border-color: rgba(245, 158, 11, 0.4);
+}
+
+.nav-badge.badge-purple {
+    background: rgba(168, 85, 247, 0.2);
+    color: var(--color-purple);
+    border-color: rgba(168, 85, 247, 0.4);
+}
+
+.nav-badge.badge-emerald {
+    background: rgba(16, 185, 129, 0.2);
+    color: var(--color-success);
+    border-color: rgba(16, 185, 129, 0.4);
+}
+
+.tab-count-badge {
+    font-size: 0.75rem;
+    opacity: 0.85;
+    margin-left: 4px;
+    padding: 1px 6px;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.1);
+}
+
+/* File Upload & Attachment Styles */
+.file-upload-box {
+    border: 2px dashed var(--border-color);
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: var(--radius-sm);
+    padding: 16px;
+    text-align: center;
+    cursor: pointer;
+    transition: var(--transition-smooth);
+}
+.file-upload-box:hover {
+    border-color: var(--color-primary);
+    background: rgba(99, 102, 241, 0.05);
+}
+
+.file-attachment-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border-color);
+    padding: 12px 16px;
+    border-radius: var(--radius-sm);
+    margin-top: 8px;
+}
+
+.file-attachment-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.file-attachment-name {
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.file-attachment-size {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}
+
+</style>
+</head>
+<body>
+    <!-- Toast Notification Container -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <!-- AUTHENTICATION CONTAINER -->
+    <div id="auth-container" class="auth-container">
+        <div class="auth-card glass-panel">
+            <div class="auth-header">
+                <h1 class="logo-text">Essays Writers</h1>
+                <p>Administrator Control Room Access</p>
+            </div>
+
+            <!-- Admin Login Form -->
+            <form id="form-admin-login" class="auth-form" onsubmit="handleAdminLogin(event)">
+                <div class="form-group">
+                    <label for="a-login-email">Admin Email</label>
+                    <input type="email" id="a-login-email" name="email" autocomplete="username" required placeholder="admin@essayswriters.com">
+                </div>
+                <div class="form-group">
+                    <label for="a-login-password">Password</label>
+                    <input type="password" id="a-login-password" name="password" autocomplete="current-password" required placeholder="••••••••">
+                </div>
+                <button type="submit" class="btn btn-secondary btn-block">Access Admin Portal</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- MAIN PORTAL WRAPPER -->
+    <div id="portal-container" class="portal-container hidden">
+        <!-- Sidebar Navigation (Vertical) -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <span class="logo-title">Essays Writers</span>
+                <span class="portal-badge" style="color: var(--color-purple); border-color: rgba(168, 85, 247, 0.4); background: rgba(168, 85, 247, 0.15)">Admin Control</span>
+            </div>
+
+            <!-- ADMIN MENU -->
+            <nav id="admin-nav" class="sidebar-nav">
+                <a href="#" class="nav-item active" data-tab="a-users" onclick="switchTab('a-users')">
+                    <i data-lucide="users"></i>
+                    <span>User Control</span>
+                    <span class="nav-badge" id="a-badge-users">0</span>
+                </a>
+                <a href="#" class="nav-item" data-tab="a-tasks" onclick="switchTab('a-tasks')">
+                    <i data-lucide="folder-kanban"></i>
+                    <span>Manage Tasks</span>
+                    <span class="nav-badge" id="a-badge-tasks">0</span>
+                </a>
+                <a href="#" class="nav-item" data-tab="a-claims" onclick="switchTab('a-claims')">
+                    <i data-lucide="user-check"></i>
+                    <span>Pending Claims</span>
+                    <span class="nav-badge badge-amber" id="a-badge-claims">0</span>
+                </a>
+                <a href="#" class="nav-item" data-tab="a-order-chats" onclick="switchTab('a-order-chats')">
+                    <i data-lucide="message-square"></i>
+                    <span>Order Chats</span>
+                    <span class="nav-badge badge-purple" id="a-badge-order-chats">0</span>
+                </a>
+                <a href="#" class="nav-item" data-tab="a-support" onclick="switchTab('a-support')">
+                    <i data-lucide="message-circle"></i>
+                    <span>Support Chat</span>
+                    <span class="nav-badge" id="a-badge-support">0</span>
+                </a>
+                <a href="#" class="nav-item" data-tab="a-withdrawals" onclick="switchTab('a-withdrawals')">
+                    <i data-lucide="banknote"></i>
+                    <span>Withdrawal</span>
+                    <span class="nav-badge badge-emerald" id="a-badge-withdrawals">0</span>
+                </a>
+            </nav>
+
+            <!-- Sidebar Footer: Create Task & Profile -->
+            <div class="sidebar-footer">
+                <button id="btn-sidebar-create-task" class="btn btn-create-task" onclick="openCreateTaskModal()">
+                    <i data-lucide="plus-circle"></i>
+                    <span>Create Task</span>
+                </button>
+
+                <div class="user-profile-widget">
+                    <div class="user-avatar">A</div>
+                    <div class="user-info">
+                        <div class="username">Admin User</div>
+                        <div class="user-role">admin@essayswriters.com</div>
+                    </div>
+                    <button class="btn-logout" onclick="handleLogout()" title="Log out">
+                        <i data-lucide="log-out"></i>
+                    </button>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <header class="main-header">
+                <div class="header-left">
+                    <h2 class="page-title" id="page-title-text">Dashboard</h2>
+                </div>
+                <div class="header-right">
+                    <div class="header-stat">
+                        <span class="stat-label">System Time:</span>
+                        <span class="stat-value" id="system-time">00:00 AM</span>
+                    </div>
+                </div>
+            </header>
+
+            <div class="tab-content-container">
+                <!-- 1. ADMIN USER CONTROL -->
+                <section id="tab-a-users" class="tab-pane">
+                    <div class="dashboard-stats-grid">
+                        <div class="stat-card glass-panel glow-blue">
+                            <div class="stat-icon-wrapper blue"><i data-lucide="users"></i></div>
+                            <div class="stat-details">
+                                <span class="card-label">Registered Writers</span>
+                                <h3 class="card-number" id="a-stat-writers-count">0</h3>
+                            </div>
+                        </div>
+                        <div class="stat-card glass-panel glow-purple">
+                            <div class="stat-icon-wrapper purple"><i data-lucide="file-check"></i></div>
+                            <div class="stat-details">
+                                <span class="card-label">Total Claims Pending</span>
+                                <h3 class="card-number" id="a-stat-claims-count">0</h3>
+                            </div>
+                        </div>
+                        <div class="stat-card glass-panel glow-emerald">
+                            <div class="stat-icon-wrapper emerald"><i data-lucide="dollar-sign"></i></div>
+                            <div class="stat-details">
+                                <span class="card-label">Payouts Pending</span>
+                                <h3 class="card-number" id="a-stat-withdrawals-count">0</h3>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="dashboard-card glass-panel">
+                        <div class="card-header">
+                            <h3>Writer Database Controls</h3>
+                        </div>
+                        <div class="table-container">
+                            <table class="users-table">
+                                <thead>
+                                    <tr>
+                                        <th>Writer ID</th>
+                                        <th>Name</th>
+                                        <th>Email</th>
+                                        <th>Phone</th>
+                                        <th>Completed tasks</th>
+                                        <th>Current Balance</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="a-users-table-body">
+                                    <!-- Dynamic -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 2. ADMIN MANAGE TASKS -->
+                <section id="tab-a-tasks" class="tab-pane hidden">
+                    <div class="horizontal-nav-tabs glass-panel">
+                        <button class="h-tab-btn active" data-subtab="all" onclick="switchManageTasksTab('all')">All Tasks <span class="tab-count-badge" id="a-cnt-all">0</span></button>
+                        <button class="h-tab-btn" data-subtab="available" onclick="switchManageTasksTab('available')">Available <span class="tab-count-badge" id="a-cnt-available">0</span></button>
+                        <button class="h-tab-btn" data-subtab="in_progress" onclick="switchManageTasksTab('in_progress')">In Progress <span class="tab-count-badge" id="a-cnt-progress">0</span></button>
+                        <button class="h-tab-btn" data-subtab="in_review" onclick="switchManageTasksTab('in_review')">In Review <span class="tab-count-badge" id="a-cnt-review">0</span></button>
+                        <button class="h-tab-btn" data-subtab="in_revision" onclick="switchManageTasksTab('in_revision')">In Revision <span class="tab-count-badge" id="a-cnt-revision">0</span></button>
+                        <button class="h-tab-btn" data-subtab="completed" onclick="switchManageTasksTab('completed')">Completed <span class="tab-count-badge" id="a-cnt-completed">0</span></button>
+                        <button class="h-tab-btn" data-subtab="cancelled" onclick="switchManageTasksTab('cancelled')">Cancelled <span class="tab-count-badge" id="a-cnt-cancelled">0</span></button>
+                    </div>
+
+                    <div class="manage-tasks-content">
+                        <div class="tasks-grid" id="a-manage-tasks-list">
+                            <!-- Loaded via Javascript -->
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 3. ADMIN PENDING CLAIMS -->
+                <section id="tab-a-claims" class="tab-pane hidden">
+                    <div class="claims-dashboard" id="a-claims-list">
+                        <!-- Dynamic list of claimed orders -->
+                    </div>
+                </section>
+
+                <!-- 4. ADMIN ORDER CHATS -->
+                <section id="tab-a-order-chats" class="tab-pane hidden">
+                    <div class="chat-wrapper glass-panel">
+                        <div class="chat-sidebar">
+                            <div class="chat-sidebar-header">Select Task Orders</div>
+                            <div class="chat-list" id="a-order-chat-list">
+                                <!-- Dynamic tasks lists -->
+                            </div>
+                        </div>
+                        <div class="chat-main" id="a-order-chat-main">
+                            <div class="chat-empty-state">
+                                <i data-lucide="message-square" class="large-icon"></i>
+                                <h3>Select an active order thread to communicate with the writer.</h3>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 5. ADMIN SUPPORT CHAT -->
+                <section id="tab-a-support" class="tab-pane hidden">
+                    <div class="chat-wrapper glass-panel">
+                        <div class="chat-sidebar">
+                            <div class="chat-sidebar-header">Active Writers</div>
+                            <div class="chat-list" id="a-support-writers-list">
+                                <!-- Dynamic writers list -->
+                            </div>
+                        </div>
+                        <div class="chat-main" id="a-support-chat-main">
+                            <div class="chat-empty-state">
+                                <i data-lucide="user" class="large-icon"></i>
+                                <h3>Select a writer from the sidebar to chat directly with them.</h3>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 6. ADMIN WITHDRAWAL REQUESTS -->
+                <section id="tab-a-withdrawals" class="tab-pane hidden">
+                    <div class="dashboard-card glass-panel">
+                        <div class="card-header">
+                            <h3>Pending Cashouts</h3>
+                        </div>
+                        <div class="table-container">
+                            <table class="withdrawal-table">
+                                <thead>
+                                    <tr>
+                                        <th>Request ID</th>
+                                        <th>Writer</th>
+                                        <th>Amount Requested</th>
+                                        <th>Request Date</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="a-withdrawals-table-body">
+                                    <!-- Dynamic list -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <!-- CREATE TASK MODAL (ADMIN) -->
+    <div id="modal-create-task" class="modal-overlay hidden">
+        <div class="modal-card glass-panel scale-up-in">
+            <div class="modal-header">
+                <h3><i data-lucide="plus-circle" class="text-indigo"></i> Create Essay Assignment</h3>
+                <button class="modal-close-btn" onclick="closeCreateTaskModal()">&times;</button>
+            </div>
+            <form id="form-create-task" onsubmit="handleCreateTaskSubmit(event)">
+                <div class="modal-body scrollable-y">
+                    <div class="form-grid">
+                        <div class="form-group flex-2">
+                            <label for="task-title">Order Title</label>
+                            <input type="text" id="task-title" required placeholder="e.g. Analysis of American Civil War Outcomes">
+                        </div>
+                        <div class="form-group flex-1">
+                            <label>Order Number</label>
+                            <input type="text" id="task-order-num" readonly class="input-disabled" value="12119">
+                        </div>
+                    </div>
+                    
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="task-subject">Subject</label>
+                            <input type="text" id="task-subject" required placeholder="e.g. History, Biology, Computer Science">
+                        </div>
+                        <div class="form-group">
+                            <label for="task-paper-type">Type of Paper</label>
+                            <select id="task-paper-type" required>
+                                <option value="Essay">Essay</option>
+                                <option value="Research Paper">Research Paper</option>
+                                <option value="Discussion Post">Discussion Post</option>
+                                <option value="Case Study">Case Study</option>
+                                <option value="Literature Review">Literature Review</option>
+                                <option value="Term Paper">Term Paper</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="task-academic-level">Academic Level</label>
+                            <select id="task-academic-level" required>
+                                <option value="High School">High School</option>
+                                <option value="College">College</option>
+                                <option value="Bachelor">Bachelor</option>
+                                <option value="Master">Master</option>
+                                <option value="Ph.D.">Ph.D.</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="task-citation-style">Citation Style</label>
+                            <select id="task-citation-style" required>
+                                <option value="APA">APA</option>
+                                <option value="MLA">MLA</option>
+                                <option value="Harvard">Harvard</option>
+                                <option value="Chicago">Chicago</option>
+                                <option value="Vancouver">Vancouver</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-grid page-calculation-row">
+                        <div class="form-group">
+                            <label for="task-pages">Page Numbers</label>
+                            <input type="number" id="task-pages" min="1" required value="1" oninput="calculateTaskCostsAndWords()">
+                        </div>
+                        <div class="form-group">
+                            <label>Word Count (Auto)</label>
+                            <input type="text" id="task-word-count-readonly" readonly class="input-disabled text-indigo font-bold" value="275 words">
+                        </div>
+                        <div class="form-group">
+                            <label>Total Cost (Auto)</label>
+                            <input type="text" id="task-cost-readonly" readonly class="input-disabled text-emerald font-bold" value="$2.60">
+                        </div>
+                    </div>
+
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="task-references">References Required</label>
+                            <input type="number" id="task-references" min="0" required value="0">
+                        </div>
+                        <div class="form-group">
+                            <label for="task-format">Document Format</label>
+                            <select id="task-format" required>
+                                <option value="Word Document (.docx)">Word Document (.docx)</option>
+                                <option value="PDF Document (.pdf)">PDF Document (.pdf)</option>
+                                <option value="PowerPoint Presentation (.pptx)">PowerPoint Presentation (.pptx)</option>
+                                <option value="Excel sheet (.xlsx)">Excel sheet (.xlsx)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="task-deadline">Deadline (Date & Time)</label>
+                        <input type="datetime-local" id="task-deadline" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="task-description">Detailed Instructions / Description</label>
+                        <textarea id="task-description" rows="4" required placeholder="Paste outline, research links, details..."></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline" onclick="closeCreateTaskModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary"><i data-lucide="send"></i> Publish Order</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- REVIEW TASK MODAL (ADMIN) -->
+    <div id="modal-review-task" class="modal-overlay hidden">
+        <div class="modal-card glass-panel scale-up-in large-modal">
+            <div class="modal-header">
+                <h3>Review Essay Submission: <span id="review-task-order" class="text-indigo"></span></h3>
+                <button class="modal-close-btn" onclick="closeReviewModal()">&times;</button>
+            </div>
+            <div class="modal-body scrollable-y">
+                <div class="review-details-grid">
+                    <div>
+                        <span class="review-meta-label">Order Title:</span>
+                        <h4 id="review-task-title">Title</h4>
+                    </div>
+                    <div>
+                        <span class="review-meta-label">Writer:</span>
+                        <span id="review-task-writer" class="text-indigo font-medium">Writer Name</span>
+                    </div>
+                </div>
+                <hr class="divider">
+                <div class="review-submission-box">
+                    <span class="review-meta-label">Submitted Document File:</span>
+                    <div id="review-task-file-box">No document uploaded.</div>
+
+                    <span class="review-meta-label mt-3">Submitted Document Link:</span>
+                    <p id="review-task-doc-link">No link provided.</p>
+                    
+                    <span class="review-meta-label mt-3">Completed Essay Content:</span>
+                    <pre class="submission-text-view" id="review-task-doc-content"></pre>
+                </div>
+
+                <div id="review-revision-box" class="form-group mt-3 hidden">
+                    <label for="review-revision-feedback" class="text-warning">Revision Feedback / Comments</label>
+                    <textarea id="review-revision-feedback" rows="3" placeholder="Provide specific feedback detailing what changes are required..."></textarea>
+                </div>
+            </div>
+            <div class="modal-footer flex-end">
+                <button class="btn btn-outline" onclick="closeReviewModal()">Close</button>
+                <button class="btn btn-danger" id="btn-review-cancel" onclick="handleReviewAction('cancel')">Cancel Task</button>
+                <button class="btn btn-warning" id="btn-review-revision-toggle" onclick="toggleRevisionInput()">Send to Revision</button>
+                <button class="btn btn-warning hidden" id="btn-review-revision-submit" onclick="handleReviewAction('revision')">Submit Feedback</button>
+                <button class="btn btn-emerald" id="btn-review-complete" onclick="handleReviewAction('complete')">Complete Task</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- DEVELOPMENT / TESTING TOOLBAR (FLOATING AT BOTTOM - ADMIN SPECIFIC) -->
+    <div class="dev-helper-bar">
+        <span class="dev-title"><i data-lucide="settings-2"></i> Admin Dev Panel:</span>
+        <button class="dev-btn btn-reset" onclick="resetDatabase()"><i data-lucide="refresh-cw"></i> Reset Database</button>
+    </div>
+
+    <script>
+// ==========================================================================
+// ESSAYS WRITERS - ADMIN LOGIC ENGINE (admin.js)
+// ==========================================================================
+
+let state = {
+    users: [],
+    tasks: [],
+    withdrawals: [],
+    orderChats: {},
+    supportChats: {},
+    currentUser: null,
+    currentManageTasksTab: 'all',
+    activeChatTaskId: null,
+    activeSupportUserId: null
+};
+
+// Initial Mock Seed Data
+const MOCK_USERS = [
+    { id: 'user-alex', name: 'Alex Rivera', email: 'alex@writers.com', phone: '+1234567890', password: 'password123', balance: 15.40, completedTasksCount: 2 },
+    { id: 'user-sarah', name: 'Sarah Connor', email: 'sarah@writers.com', phone: '+1987654321', password: 'password123', balance: 0.00, completedTasksCount: 0 }
+];
+
+const MOCK_TASKS = [
+    {
+        id: 'task-12119', orderNumber: 12119, title: 'Literature Review on Shakespearean Tragedies', subject: 'Literature', paperType: 'Literature Review',
+        academicLevel: 'College', citationStyle: 'MLA', pages: 3, words: 825, cost: 7.80, references: 5, format: 'Word Document (.docx)',
+        deadline: '2026-08-01T12:00', description: 'Comprehensive analysis of Hamlet and Macbeth, detailing narrative devices and character arcs.',
+        status: 'completed', assignedTo: 'user-alex', claims: [], submissions: [{ link: 'https://docs.google.com/document/d/mock-shakespeare', content: 'Full literature review on Hamlet and Macbeth analyzing the role of external prophecies and tragic flaws.', timestamp: '2026-07-23T14:30:00.000Z' }],
+        revisionFeedback: null
+    },
+    {
+        id: 'task-12120', orderNumber: 12120, title: 'Modern Computing Paradigms Analysis', subject: 'Computer Science', paperType: 'Research Paper',
+        academicLevel: 'Bachelor', citationStyle: 'APA', pages: 4, words: 1100, cost: 10.40, references: 8, format: 'PDF Document (.pdf)',
+        deadline: '2026-07-30T18:00', description: 'Detailing cloud, edge, and quantum computing frameworks. Highlight cost-benefit and latency metrics.',
+        status: 'in_progress', assignedTo: 'user-alex', claims: [], submissions: [], revisionFeedback: null
+    },
+    {
+        id: 'task-12121', orderNumber: 12121, title: 'Discussion Post: Ethics in Artificial Intelligence', subject: 'Computer Science', paperType: 'Discussion Post',
+        academicLevel: 'Bachelor', citationStyle: 'APA', pages: 1, words: 275, cost: 2.60, references: 2, format: 'Word Document (.docx)',
+        deadline: '2026-07-28T09:00', description: 'Provide an argument on whether facial recognition algorithms should have restricted commercial use.',
+        status: 'available', assignedTo: null, claims: ['user-sarah'], submissions: [], revisionFeedback: null
+    },
+    {
+        id: 'task-12122', orderNumber: 12122, title: 'Case Study: Starbucks Global Marketing Strategy', subject: 'Business', paperType: 'Case Study',
+        academicLevel: 'Master', citationStyle: 'Harvard', pages: 5, words: 1375, cost: 13.00, references: 10, format: 'Word Document (.docx)',
+        deadline: '2026-07-29T15:00', description: 'Examine localization strategy of Starbucks in East Asian markets vs domestic US models.',
+        status: 'in_review', assignedTo: 'user-alex', claims: [], submissions: [{ link: 'https://docs.google.com/document/d/mock-starbucks', content: 'Starbucks case study submission: Core analysis explores their localization, brand positioning, and joint venture choices.', timestamp: '2026-07-24T18:00:00.000Z' }],
+        revisionFeedback: null
+    }
+];
+
+const MOCK_WITHDRAWALS = [
+    { id: 'wd-001', userId: 'user-alex', userName: 'Alex Rivera', amount: 25.00, timestamp: '2026-07-23T11:00:00.000Z', status: 'approved' }
+];
+
+const MOCK_ORDER_CHATS = {
+    'task-12120': [
+        { senderId: 'admin', senderName: 'Admin', message: 'Hi Alex, please make sure to double check the quantum computing statistics.', timestamp: '2026-07-24T09:30:00.000Z' },
+        { senderId: 'user-alex', senderName: 'Alex Rivera', message: 'Sure, I am on it and will include the latest 2026 benchmarks.', timestamp: '2026-07-24T10:15:00.000Z' }
+    ]
+};
+
+const MOCK_SUPPORT_CHATS = {
+    'user-alex': [
+        { senderId: 'user-alex', senderName: 'Alex Rivera', message: 'Hello Admin, when will the withdrawal be processed?', timestamp: '2026-07-23T10:30:00.000Z' },
+        { senderId: 'admin', senderName: 'Admin', message: 'Hello Alex, withdrawal requests are processed within 24 hours. Your request is approved.', timestamp: '2026-07-23T11:00:00.000Z' }
+    ],
+    'user-sarah': [
+        { senderId: 'user-sarah', senderName: 'Sarah Connor', message: 'Hi Admin, ready to pick up some tasks!', timestamp: '2026-07-24T12:00:00.000Z' },
+        { senderId: 'admin', senderName: 'Admin', message: 'Welcome Sarah! Feel free to claim any available task.', timestamp: '2026-07-24T12:05:00.000Z' }
+    ]
+};
+
+function initDatabase() {
+    if (!localStorage.getItem('ew_db_initialized')) {
+        localStorage.setItem('ew_users', JSON.stringify(MOCK_USERS));
+        localStorage.setItem('ew_tasks', JSON.stringify(MOCK_TASKS));
+        localStorage.setItem('ew_withdrawals', JSON.stringify(MOCK_WITHDRAWALS));
+        localStorage.setItem('ew_order_chats', JSON.stringify(MOCK_ORDER_CHATS));
+        localStorage.setItem('ew_support_chats', JSON.stringify(MOCK_SUPPORT_CHATS));
+        localStorage.setItem('ew_db_initialized', 'true');
+    }
+    loadDatabase();
+    updateSystemTime();
+    setInterval(updateSystemTime, 60000);
+}
+
+function loadDatabase() {
+    state.users = JSON.parse(localStorage.getItem('ew_users')) || [];
+    state.tasks = JSON.parse(localStorage.getItem('ew_tasks')) || [];
+    state.withdrawals = JSON.parse(localStorage.getItem('ew_withdrawals')) || [];
+    state.orderChats = JSON.parse(localStorage.getItem('ew_order_chats')) || {};
+    state.supportChats = JSON.parse(localStorage.getItem('ew_support_chats')) || {};
+}
+
+function saveDatabase() {
+    localStorage.setItem('ew_users', JSON.stringify(state.users));
+    localStorage.setItem('ew_tasks', JSON.stringify(state.tasks));
+    localStorage.setItem('ew_withdrawals', JSON.stringify(state.withdrawals));
+    localStorage.setItem('ew_order_chats', JSON.stringify(state.orderChats));
+    localStorage.setItem('ew_support_chats', JSON.stringify(state.supportChats));
+}
+
+function resetDatabase() {
+    localStorage.removeItem('ew_db_initialized');
+    localStorage.removeItem('ew_users');
+    localStorage.removeItem('ew_tasks');
+    localStorage.removeItem('ew_withdrawals');
+    localStorage.removeItem('ew_order_chats');
+    localStorage.removeItem('ew_support_chats');
+    initDatabase();
+    showToast('Database reset to original mock state.', 'info');
+    if (state.currentUser) {
+        handleLogout();
+    }
+}
+
+function updateSystemTime() {
+    const timeEl = document.getElementById('system-time');
+    if (timeEl) {
+        const now = new Date();
+        timeEl.textContent = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    }
+}
+
+// ==================== ADMIN AUTH ====================
+function handleAdminLogin(event) {
+    event.preventDefault();
+    const email = document.getElementById('a-login-email').value.trim();
+    const pass = document.getElementById('a-login-password').value;
+
+    if (email === 'admin@essayswriters.com' && pass === 'admin123') {
+        state.currentUser = { id: 'admin', name: 'Administrator', email: 'admin@essayswriters.com', role: 'admin' };
+        
+        document.getElementById('auth-container').classList.add('hidden');
+        document.getElementById('portal-container').classList.remove('hidden');
+        
+        showToast('Admin Access Granted.', 'success');
+        document.getElementById('form-admin-login').reset();
+        
+        switchTab('a-users');
+    } else {
+        showToast('Invalid admin credentials.', 'error');
+    }
+}
+
+function handleLogout() {
+    state.currentUser = null;
+    document.getElementById('portal-container').classList.add('hidden');
+    document.getElementById('auth-container').classList.remove('hidden');
+    showToast('Logged out successfully.', 'info');
+}
+
+// ==================== TAB SWITCHER ====================
+function switchTab(tabId) {
+    document.querySelectorAll('.tab-pane').forEach(el => el.classList.add('hidden'));
+    document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+
+    const selectedPane = document.getElementById(`tab-${tabId}`);
+    if (selectedPane) selectedPane.classList.remove('hidden');
+
+    const navItem = document.querySelector(`.nav-item[data-tab="${tabId}"]`);
+    if (navItem) navItem.classList.add('active');
+
+    let titleText = 'Dashboard';
+    if (tabId === 'a-users') titleText = 'Admin - Writer Control Directory';
+    else if (tabId === 'a-tasks') titleText = 'Admin - Manage Active Essay Tasks';
+    else if (tabId === 'a-claims') titleText = 'Admin - Pending Job Claims';
+    else if (tabId === 'a-order-chats') titleText = 'Admin - Order Chat Central';
+    else if (tabId === 'a-support') titleText = 'Admin - Support Chat Central';
+    else if (tabId === 'a-withdrawals') titleText = 'Admin - Approve Cashout Requests';
+
+    document.getElementById('page-title-text').textContent = titleText;
+    onTabLoad(tabId);
+}
+
+function onTabLoad(tabId) {
+    loadDatabase();
+    updateAdminBadges();
+    switch (tabId) {
+        case 'a-users': renderAdminUserControl(); break;
+        case 'a-tasks': renderAdminManageTasks(); break;
+        case 'a-claims': renderAdminPendingClaims(); break;
+        case 'a-order-chats': renderAdminOrderChats(); break;
+        case 'a-support': renderAdminSupportChat(); break;
+        case 'a-withdrawals': renderAdminWithdrawals(); break;
+    }
+}
+
+function updateAdminBadges() {
+    loadDatabase();
+
+    const badgeUsers = document.getElementById('a-badge-users');
+    if (badgeUsers) badgeUsers.textContent = state.users.length;
+
+    const badgeTasks = document.getElementById('a-badge-tasks');
+    if (badgeTasks) badgeTasks.textContent = state.tasks.length;
+
+    const claimsCount = state.tasks.filter(t => t.status === 'available' && t.claims && t.claims.length > 0).reduce((acc, t) => acc + t.claims.length, 0);
+    const badgeClaims = document.getElementById('a-badge-claims');
+    if (badgeClaims) badgeClaims.textContent = claimsCount;
+
+    // Count order chats with unread messages for admin (or active working tasks)
+    const workingTasksCount = state.tasks.filter(t => t.assignedTo && ['in_progress', 'in_revision', 'in_review'].includes(t.status) && t.hasUnreadChatAdmin).length;
+    const badgeOrderChats = document.getElementById('a-badge-order-chats');
+    if (badgeOrderChats) {
+        badgeOrderChats.textContent = workingTasksCount > 0 ? workingTasksCount : state.tasks.filter(t => t.assignedTo && ['in_progress', 'in_revision', 'in_review'].includes(t.status)).length;
+        if (workingTasksCount > 0) badgeOrderChats.style.background = 'var(--color-danger)';
+        else badgeOrderChats.style.background = '';
+    }
+
+    // Support unread
+    let supportUnread = 0;
+    Object.keys(state.supportChats || {}).forEach(k => {
+        if (state.supportChats[k].some(m => m.senderId === k && !m.readByAdmin)) supportUnread++;
+    });
+    const badgeSupport = document.getElementById('a-badge-support');
+    if (badgeSupport) {
+        badgeSupport.textContent = supportUnread > 0 ? supportUnread : Object.keys(state.supportChats || {}).length;
+        if (supportUnread > 0) badgeSupport.style.background = 'var(--color-danger)';
+        else badgeSupport.style.background = '';
+    }
+
+    const pendingWithdrawalsCount = state.withdrawals.filter(w => w.status === 'pending').length;
+    const badgeWithdrawals = document.getElementById('a-badge-withdrawals');
+    if (badgeWithdrawals) badgeWithdrawals.textContent = pendingWithdrawalsCount;
+
+    const cntAll = state.tasks.length;
+    const cntAvail = state.tasks.filter(t => t.status === 'available').length;
+    const cntProgress = state.tasks.filter(t => t.status === 'in_progress').length;
+    const cntReview = state.tasks.filter(t => t.status === 'in_review').length;
+    const cntRevision = state.tasks.filter(t => t.status === 'in_revision').length;
+    const cntCompleted = state.tasks.filter(t => t.status === 'completed').length;
+    const cntCancelled = state.tasks.filter(t => t.status === 'cancelled').length;
+
+    if (document.getElementById('a-cnt-all')) document.getElementById('a-cnt-all').textContent = cntAll;
+    if (document.getElementById('a-cnt-available')) document.getElementById('a-cnt-available').textContent = cntAvail;
+    if (document.getElementById('a-cnt-progress')) document.getElementById('a-cnt-progress').textContent = cntProgress;
+    
+    const elReview = document.getElementById('a-cnt-review');
+    if (elReview) {
+        elReview.textContent = cntReview;
+        const unreadReview = state.tasks.filter(t => t.status === 'in_review' && t.hasUnreadSubmission).length;
+        if (unreadReview > 0) { elReview.style.background = 'var(--color-danger)'; elReview.textContent = cntReview + ' (Unread)'; }
+        else { elReview.style.background = ''; }
+    }
+
+    if (document.getElementById('a-cnt-revision')) document.getElementById('a-cnt-revision').textContent = cntRevision;
+    if (document.getElementById('a-cnt-completed')) document.getElementById('a-cnt-completed').textContent = cntCompleted;
+    if (document.getElementById('a-cnt-cancelled')) document.getElementById('a-cnt-cancelled').textContent = cntCancelled;
+}
+
+// ==================== ADMIN CORE OPERATIONS ====================
+function renderAdminUserControl() {
+    const tbody = document.getElementById('a-users-table-body');
+    tbody.innerHTML = '';
+
+    document.getElementById('a-stat-writers-count').textContent = state.users.length;
+    document.getElementById('a-stat-claims-count').textContent = state.tasks.reduce((acc, t) => acc + (t.claims ? t.claims.length : 0), 0);
+    document.getElementById('a-stat-withdrawals-count').textContent = state.withdrawals.filter(w => w.status === 'pending').length;
+
+    if (state.users.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="7" class="text-center">No writers have registered yet.</td></tr>`;
+        return;
+    }
+
+    state.users.forEach(u => {
+        const comps = state.tasks.filter(t => t.assignedTo === u.id && t.status === 'completed').length;
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td>#${u.id.split('-').pop()}</td>
+            <td><strong class="text-indigo">${u.name}</strong></td>
+            <td>${u.email}</td>
+            <td>${u.phone}</td>
+            <td class="text-center font-bold">${comps}</td>
+            <td class="text-emerald font-bold">$${u.balance.toFixed(2)}</td>
+            <td><span class="user-status-active">Active</span></td>
+        `;
+        tbody.appendChild(tr);
+    });
+}
+
+function switchManageTasksTab(subTabName) {
+    state.currentManageTasksTab = subTabName;
+    document.querySelectorAll('.h-tab-btn').forEach(btn => {
+        btn.classList.remove('active');
+        if (btn.getAttribute('data-subtab') === subTabName) btn.classList.add('active');
+    });
+    renderAdminManageTasks();
+}
+
+function renderAdminManageTasks() {
+    const grid = document.getElementById('a-manage-tasks-list');
+    grid.innerHTML = '';
+
+    const tasks = state.tasks.filter(t => {
+        if (state.currentManageTasksTab === 'all') return true;
+        return t.status === state.currentManageTasksTab;
+    });
+
+    if (tasks.length === 0) {
+        grid.innerHTML = `<div class="chat-empty-state" style="grid-column: 1/-1; padding: 40px 0;">
+            <i data-lucide="folder" class="large-icon"></i>
+            <h3>No tasks found under the "${state.currentManageTasksTab}" category.</h3>
+        </div>`;
+        lucide.createIcons();
+        return;
+    }
+
+    tasks.forEach(task => {
+        let assignedWriterName = 'Unassigned';
+        if (task.assignedTo) {
+            const writer = state.users.find(u => u.id === task.assignedTo);
+            assignedWriterName = writer ? writer.name : 'Unknown';
+        }
+
+        let actionBtnHTML = '';
+        if (task.status === 'in_review') {
+            actionBtnHTML = `<button class="btn btn-emerald btn-block" style="margin-top:10px;" onclick="openReviewModal('${task.id}')"><i data-lucide="eye"></i> Review Submission</button>`;
+        } else {
+            actionBtnHTML = `<button class="btn btn-outline btn-block" style="margin-top:10px;" onclick="switchTab('a-order-chats'); selectAdminOrderChat('${task.id}');"><i data-lucide="message-square"></i> Open Chats</button>`;
+        }
+
+        const card = document.createElement('div');
+        card.className = 'task-card glass-panel';
+        card.innerHTML = `
+            <div class="task-card-header">
+                <div>
+                    <span class="task-order-tag">ORDER #${task.orderNumber}</span>
+                    <h4 class="task-title">${task.title}</h4>
+                </div>
+                <span class="status-badge ${task.status}">${task.status.replace('_', ' ')}</span>
+            </div>
+            
+            <div class="task-meta-grid">
+                <div class="task-meta-item">
+                    <span class="meta-label">Subject / Level</span>
+                    <span class="meta-val">${task.subject} (${task.academicLevel})</span>
+                </div>
+                <div class="task-meta-item">
+                    <span class="meta-label">Assigned Writer</span>
+                    <span class="meta-val text-indigo">${assignedWriterName}</span>
+                </div>
+                <div class="task-meta-item">
+                    <span class="meta-label">Citation Style</span>
+                    <span class="meta-val">${task.citationStyle}</span>
+                </div>
+                <div class="task-meta-item">
+                    <span class="meta-label">Volume</span>
+                    <span class="meta-val">${task.pages} Pages (${task.words} words)</span>
+                </div>
+            </div>
+
+            <div class="task-deadline-box">
+                <i data-lucide="clock" style="width:14px; height:14px;"></i>
+                <span>Deadline: ${formatDeadline(task.deadline)}</span>
+            </div>
+
+            <div class="task-card-footer">
+                <span class="task-price">$${task.cost.toFixed(2)}</span>
+            </div>
+            ${actionBtnHTML}
+        `;
+        grid.appendChild(card);
+    });
+    lucide.createIcons();
+}
+
+function openCreateTaskModal() {
+    loadDatabase();
+    let nextOrderNum = 12119;
+    if (state.tasks.length > 0) {
+        const maxNum = Math.max(...state.tasks.map(t => t.orderNumber || 0));
+        if (maxNum >= 12119) nextOrderNum = maxNum + 1;
+    }
+
+    document.getElementById('task-order-num').value = nextOrderNum;
+    document.getElementById('form-create-task').reset();
+    document.getElementById('task-order-num').value = nextOrderNum;
+    calculateTaskCostsAndWords();
+    
+    document.getElementById('modal-create-task').classList.remove('hidden');
+    lucide.createIcons();
+}
+
+function closeCreateTaskModal() {
+    document.getElementById('modal-create-task').classList.add('hidden');
+}
+
+function calculateTaskCostsAndWords() {
+    const pagesVal = parseInt(document.getElementById('task-pages').value) || 1;
+    const words = pagesVal * 275;
+    const cost = pagesVal * 2.60;
+
+    document.getElementById('task-word-count-readonly').value = `${words} words`;
+    document.getElementById('task-cost-readonly').value = `$${cost.toFixed(2)}`;
+}
+
+function handleCreateTaskSubmit(event) {
+    event.preventDefault();
+    loadDatabase();
+
+    const title = document.getElementById('task-title').value.trim();
+    const orderNumber = parseInt(document.getElementById('task-order-num').value);
+    const subject = document.getElementById('task-subject').value.trim();
+    const paperType = document.getElementById('task-paper-type').value;
+    const academicLevel = document.getElementById('task-academic-level').value;
+    const citationStyle = document.getElementById('task-citation-style').value;
+    const pages = parseInt(document.getElementById('task-pages').value) || 1;
+    const words = pages * 275;
+    const cost = pages * 2.60;
+    const references = parseInt(document.getElementById('task-references').value) || 0;
+    const format = document.getElementById('task-format').value;
+    const deadline = document.getElementById('task-deadline').value;
+    const description = document.getElementById('task-description').value.trim();
+
+    const newTask = {
+        id: 'task-' + Date.now(), orderNumber, title, subject, paperType, academicLevel, citationStyle,
+        pages, words, cost, references, format, deadline, description,
+        status: 'available', assignedTo: null, claims: [], submissions: [], revisionFeedback: null
+    };
+
+    state.tasks.push(newTask);
+    saveDatabase();
+    
+    closeCreateTaskModal();
+    showToast(`Order #${orderNumber} created and posted to Available Tasks!`, 'success');
+    renderAdminManageTasks();
+    updateAdminBadges();
+}
+
+// ==================== PENDING CLAIMS ====================
+function renderAdminPendingClaims() {
+    const list = document.getElementById('a-claims-list');
+    list.innerHTML = '';
+
+    const claimedTasks = state.tasks.filter(t => t.status === 'available' && t.claims && t.claims.length > 0);
+
+    if (claimedTasks.length === 0) {
+        list.innerHTML = `<div class="chat-empty-state"><i data-lucide="user-check" class="large-icon"></i><h3>No claim requests pending.</h3></div>`;
+        lucide.createIcons();
+        return;
+    }
+
+    claimedTasks.forEach(task => {
+        const card = document.createElement('div');
+        card.className = 'claim-order-card glass-panel';
+
+        let claimantsRowsHTML = '';
+        task.claims.forEach(userId => {
+            const writer = state.users.find(u => u.id === userId);
+            if (writer) {
+                const compCount = state.tasks.filter(t => t.assignedTo === writer.id && t.status === 'completed').length;
+                claimantsRowsHTML += `
+                    <div class="claimant-row">
+                        <div class="claimant-info">
+                            <div class="user-avatar">${writer.name.charAt(0).toUpperCase()}</div>
+                            <div>
+                                <span class="claimant-name">${writer.name}</span>
+                                <div class="claimant-stats">Completed Tasks: <strong>${compCount}</strong> | Balance: <strong>$${writer.balance.toFixed(2)}</strong></div>
+                            </div>
+                        </div>
+                        <button class="btn btn-primary" onclick="handleHireWriter('${task.id}', '${writer.id}')">Hire Writer</button>
+                    </div>
+                `;
+            }
+        });
+
+        card.innerHTML = `
+            <div class="claim-order-header">
+                <div>
+                    <span class="task-order-tag">ORDER #${task.orderNumber}</span>
+                    <h4>${task.title}</h4>
+                </div>
+                <div>
+                    <span class="task-price">$${task.cost.toFixed(2)}</span>
+                </div>
+            </div>
+            <div class="claim-list-section">
+                ${claimantsRowsHTML}
+            </div>
+        `;
+        list.appendChild(card);
+    });
+    lucide.createIcons();
+}
+
+function handleHireWriter(taskId, userId) {
+    loadDatabase();
+    const task = state.tasks.find(t => t.id === taskId);
+    const writer = state.users.find(u => u.id === userId);
+
+    if (task && writer) {
+        task.assignedTo = writer.id;
+        task.status = 'in_progress';
+        task.claims = [];
+        saveDatabase();
+        showToast(`Hired ${writer.name} for Order #${task.orderNumber}.`, 'success');
+        renderAdminPendingClaims();
+    }
+}
+
+// ==================== DISCUSSIONS & CHATS ====================
+function renderAdminOrderChats() {
+    const list = document.getElementById('a-order-chat-list');
+    list.innerHTML = '';
+
+    const workingTasks = state.tasks.filter(t => t.assignedTo && ['in_progress', 'in_revision', 'in_review', 'completed', 'cancelled'].includes(t.status));
+
+    if (workingTasks.length === 0) {
+        list.innerHTML = `<div class="text-center p-3 text-muted">No active assignments for chats.</div>`;
+        return;
+    }
+
+    workingTasks.forEach(task => {
+        const activeClass = state.activeChatTaskId === task.id ? 'active' : '';
+        const item = document.createElement('div');
+        item.className = `chat-list-item ${activeClass}`;
+        item.onclick = () => selectAdminOrderChat(task.id);
+        
+        const writer = state.users.find(u => u.id === task.assignedTo);
+        const unreadIndicator = task.hasUnreadChatAdmin ? '<span class="text-danger font-bold text-xs" style="float:right;">(Unread)</span>' : '';
+        item.innerHTML = `
+            <span class="chat-item-title">#${task.orderNumber} - ${task.title}</span>
+            <div class="chat-item-subtitle">
+                <span>Writer: ${writer ? writer.name : 'Unknown'}${unreadIndicator}</span>
+                <span class="status-badge ${task.status}">${task.status.replace('_', ' ')}</span>
+            </div>
+        `;
+        list.appendChild(item);
+    });
+
+    renderAdminActiveOrderChatPanel();
+}
+
+function selectAdminOrderChat(taskId) {
+    loadDatabase();
+    state.activeChatTaskId = taskId;
+    const task = state.tasks.find(t => t.id === taskId);
+    if (task && task.hasUnreadChatAdmin) {
+        task.hasUnreadChatAdmin = false;
+        saveDatabase();
+        updateAdminBadges();
+    }
+    renderAdminOrderChats();
+}
+
+function renderAdminActiveOrderChatPanel() {
+    const main = document.getElementById('a-order-chat-main');
+    if (!state.activeChatTaskId) {
+        main.innerHTML = `<div class="chat-empty-state"><i data-lucide="message-square" class="large-icon"></i><h3>Select an active order chat.</h3></div>`;
+        lucide.createIcons();
+        return;
+    }
+
+    const task = state.tasks.find(t => t.id === state.activeChatTaskId);
+    const chats = state.orderChats[task.id] || [];
+    const writer = state.users.find(u => u.id === task.assignedTo);
+
+    main.innerHTML = `
+        <div class="chat-header">
+            <h4>Order #${task.orderNumber} chat [Writer: ${writer ? writer.name : 'Unknown'}]</h4>
+        </div>
+        <div class="chat-messages" id="a-order-chat-messages-container"></div>
+        <form class="chat-input-bar" onsubmit="sendOrderMessageAdmin(event)">
+            <input type="text" id="a-order-msg-input" placeholder="Type message for the assigned writer..." required>
+            <button type="submit" class="btn btn-primary"><i data-lucide="send"></i></button>
+        </form>
+    `;
+
+    const msgsContainer = document.getElementById('a-order-chat-messages-container');
+    chats.forEach(msg => {
+        const sideClass = msg.senderId === 'admin' ? 'sent' : 'received';
+        const bubble = document.createElement('div');
+        bubble.className = `chat-bubble ${sideClass}`;
+        bubble.innerHTML = `<strong>${msg.senderName}</strong><br>${msg.message}<span class="chat-time">${formatChatTime(msg.timestamp)}</span>`;
+        msgsContainer.appendChild(bubble);
+    });
+    msgsContainer.scrollTop = msgsContainer.scrollHeight;
+    lucide.createIcons();
+}
+
+function sendOrderMessageAdmin(event) {
+    event.preventDefault();
+    loadDatabase();
+    const input = document.getElementById('a-order-msg-input');
+    const msg = input.value.trim();
+    if (!msg || !state.activeChatTaskId) return;
+
+    if (!state.orderChats[state.activeChatTaskId]) state.orderChats[state.activeChatTaskId] = [];
+    state.orderChats[state.activeChatTaskId].push({ senderId: 'admin', senderName: 'Admin', message: msg, timestamp: new Date().toISOString() });
+    
+    const task = state.tasks.find(t => t.id === state.activeChatTaskId);
+    if (task) task.hasUnreadChatWriter = true;
+
+    saveDatabase();
+    input.value = '';
+    renderAdminActiveOrderChatPanel();
+}
+
+// ==================== SUPPORT DIRECT CHATS ====================
+function renderAdminSupportChat() {
+    const list = document.getElementById('a-support-writers-list');
+    list.innerHTML = '';
+
+    state.users.forEach(writer => {
+        const activeClass = state.activeSupportUserId === writer.id ? 'active' : '';
+        const item = document.createElement('div');
+        item.className = `chat-list-item ${activeClass}`;
+        item.onclick = () => selectAdminSupportUser(writer.id);
+        
+        const userMsgs = state.supportChats[writer.id] || [];
+        const lastMsg = userMsgs.length > 0 ? userMsgs[userMsgs.length - 1].message : 'No messages yet';
+
+        item.innerHTML = `<strong>${writer.name}</strong><div class="chat-item-subtitle">${lastMsg}</div>`;
+        list.appendChild(item);
+    });
+
+    renderAdminActiveSupportPanel();
+}
+
+function selectAdminSupportUser(userId) {
+    state.activeSupportUserId = userId;
+    renderAdminSupportChat();
+}
+
+function renderAdminActiveSupportPanel() {
+    const main = document.getElementById('a-support-chat-main');
+    if (!state.activeSupportUserId) {
+        main.innerHTML = `<div class="chat-empty-state"><i data-lucide="user" class="large-icon"></i><h3>Select a writer to support.</h3></div>`;
+        lucide.createIcons();
+        return;
+    }
+
+    const writer = state.users.find(u => u.id === state.activeSupportUserId);
+    const chats = state.supportChats[writer.id] || [];
+
+    main.innerHTML = `
+        <div class="chat-header"><h4>Direct Chat [Writer: ${writer.name}]</h4></div>
+        <div class="chat-messages" id="a-support-chat-messages-container"></div>
+        <form class="chat-input-bar" onsubmit="sendSupportMessageAdmin(event)">
+            <input type="text" id="a-support-msg-input" placeholder="Type reply message to writer..." required>
+            <button type="submit" class="btn btn-primary"><i data-lucide="send"></i></button>
+        </form>
+    `;
+
+    const msgsContainer = document.getElementById('a-support-chat-messages-container');
+    chats.forEach(msg => {
+        const sideClass = msg.senderId === 'admin' ? 'sent' : 'received';
+        const bubble = document.createElement('div');
+        bubble.className = `chat-bubble ${sideClass}`;
+        bubble.innerHTML = `${msg.message}<span class="chat-time">${formatChatTime(msg.timestamp)}</span>`;
+        msgsContainer.appendChild(bubble);
+    });
+    msgsContainer.scrollTop = msgsContainer.scrollHeight;
+    lucide.createIcons();
+}
+
+function sendSupportMessageAdmin(event) {
+    event.preventDefault();
+    loadDatabase();
+    const input = document.getElementById('a-support-msg-input');
+    const msg = input.value.trim();
+    if (!msg || !state.activeSupportUserId) return;
+
+    if (!state.supportChats[state.activeSupportUserId]) state.supportChats[state.activeSupportUserId] = [];
+    state.supportChats[state.activeSupportUserId].push({ senderId: 'admin', senderName: 'Admin', message: msg, timestamp: new Date().toISOString() });
+    
+    saveDatabase();
+    input.value = '';
+    renderAdminActiveSupportPanel();
+}
+
+// ==================== CASH OUT WITHDRAWALS ====================
+function renderAdminWithdrawals() {
+    const tbody = document.getElementById('a-withdrawals-table-body');
+    tbody.innerHTML = '';
+
+    const pendings = state.withdrawals.filter(w => w.status === 'pending');
+
+    if (pendings.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="5" class="text-center">No cashout requests pending approval.</td></tr>`;
+        return;
+    }
+
+    pendings.forEach(w => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td>#${w.id.split('-').pop()}</td>
+            <td><strong class="text-indigo">${w.userName}</strong></td>
+            <td class="text-emerald font-bold">$${w.amount.toFixed(2)}</td>
+            <td>${formatDate(w.timestamp)}</td>
+            <td>
+                <div style="display:flex; gap:6px;">
+                    <button class="btn btn-emerald btn-sm" onclick="handleWithdrawalDecision('${w.id}', 'approved')" style="padding: 4px 10px; font-size:0.75rem;">Approve</button>
+                    <button class="btn btn-danger btn-sm" onclick="handleWithdrawalDecision('${w.id}', 'rejected')" style="padding: 4px 10px; font-size:0.75rem;">Reject</button>
+                </div>
+            </td>
+        `;
+        tbody.appendChild(tr);
+    });
+}
+
+function handleWithdrawalDecision(wdId, decision) {
+    loadDatabase();
+    const w = state.withdrawals.find(x => x.id === wdId);
+    if (!w) return;
+
+    const writer = state.users.find(u => u.id === w.userId);
+
+    if (decision === 'approved') {
+        w.status = 'approved';
+        showToast(`Withdrawal of $${w.amount.toFixed(2)} approved.`, 'success');
+    } else {
+        w.status = 'rejected';
+        if (writer) writer.balance += w.amount;
+        showToast(`Withdrawal of $${w.amount.toFixed(2)} rejected and refunded.`, 'info');
+    }
+
+    saveDatabase();
+    renderAdminWithdrawals();
+}
+
+// ==================== SUBMISSION EVALUATION ====================
+let activeReviewTaskId = null;
+
+function openReviewModal(taskId) {
+    loadDatabase();
+    const task = state.tasks.find(t => t.id === taskId);
+    if (!task) return;
+
+    if (task.hasUnreadSubmission) {
+        task.hasUnreadSubmission = false;
+        saveDatabase();
+        updateAdminBadges();
+        // Since we are changing state while rendering manage tasks list potentially, wait for this tab refresh
+        renderAdminManageTasks();
+    }
+
+    activeReviewTaskId = taskId;
+    document.getElementById('review-task-order').textContent = `Order #${task.orderNumber}`;
+    document.getElementById('review-task-title').textContent = task.title;
+
+    const writer = state.users.find(u => u.id === task.assignedTo);
+    document.getElementById('review-task-writer').textContent = writer ? writer.name : 'Unknown';
+
+    const latestSubmission = task.submissions[task.submissions.length - 1];
+    
+    // File Card Attachment
+    const fileBox = document.getElementById('review-task-file-box');
+    if (fileBox) {
+        if (latestSubmission && latestSubmission.fileName) {
+            let downloadBtnHtml = '';
+            if (latestSubmission.fileDataUrl) {
+                downloadBtnHtml = `<a href="${latestSubmission.fileDataUrl}" download="${latestSubmission.fileName}" class="btn btn-outline" style="padding: 4px 8px; font-size: 12px; margin-top: 5px;">Download File</a>`;
+            }
+            fileBox.innerHTML = `
+                <div class="file-attachment-card">
+                    <div class="file-attachment-info">
+                        <i data-lucide="file-text" class="text-indigo" style="width:24px; height:24px;"></i>
+                        <div>
+                            <div class="file-attachment-name">${latestSubmission.fileName}</div>
+                            <div class="file-attachment-size">${latestSubmission.fileSize || 'Document File'}</div>
+                            ${downloadBtnHtml}
+                        </div>
+                    </div>
+                    <span class="status-badge completed">Uploaded Document</span>
+                </div>
+            `;
+        } else {
+            fileBox.innerHTML = '<span class="text-muted" style="font-size:0.85rem;">No document file attached.</span>';
+        }
+    }
+
+    if (latestSubmission && latestSubmission.link) {
+        document.getElementById('review-task-doc-link').innerHTML = `<a href="${latestSubmission.link}" target="_blank" class="text-link">${latestSubmission.link}</a>`;
+    } else {
+        document.getElementById('review-task-doc-link').textContent = 'No link provided.';
+    }
+
+    document.getElementById('review-task-doc-content').textContent = latestSubmission ? latestSubmission.content : '';
+
+    document.getElementById('review-revision-box').classList.add('hidden');
+    document.getElementById('btn-review-revision-toggle').classList.remove('hidden');
+    document.getElementById('btn-review-revision-submit').classList.add('hidden');
+
+    document.getElementById('modal-review-task').classList.remove('hidden');
+    lucide.createIcons();
+}
+
+function closeReviewModal() {
+    document.getElementById('modal-review-task').classList.add('hidden');
+    activeReviewTaskId = null;
+}
+
+function toggleRevisionInput() {
+    document.getElementById('review-revision-box').classList.remove('hidden');
+    document.getElementById('btn-review-revision-toggle').classList.add('hidden');
+    document.getElementById('btn-review-revision-submit').classList.remove('hidden');
+}
+
+function handleReviewAction(actionType) {
+    loadDatabase();
+    const task = state.tasks.find(t => t.id === activeReviewTaskId);
+    if (!task) return;
+
+    const writer = state.users.find(u => u.id === task.assignedTo);
+
+    if (actionType === 'complete') {
+        task.status = 'completed';
+        task.revisionFeedback = null;
+        
+        if (writer) {
+            writer.balance += task.cost;
+            writer.completedTasksCount = (writer.completedTasksCount || 0) + 1;
+        }
+
+        saveDatabase();
+        showToast(`Order #${task.orderNumber} completed. $${task.cost.toFixed(2)} credited to ${writer ? writer.name : 'writer'}.`, 'success');
+        closeReviewModal();
+        renderAdminManageTasks();
+    } else if (actionType === 'revision') {
+        const feedback = document.getElementById('review-revision-feedback').value.trim();
+        if (!feedback) {
+            showToast('Feedback is required for revisions.', 'warning');
+            return;
+        }
+
+        task.status = 'in_revision';
+        task.revisionFeedback = feedback;
+        task.hasUnreadRevision = true;
+        saveDatabase();
+
+        showToast(`Order #${task.orderNumber} sent to revision.`, 'info');
+        closeReviewModal();
+        renderAdminManageTasks();
+    } else if (actionType === 'cancel') {
+        if (confirm(`Cancel Order #${task.orderNumber}?`)) {
+            task.status = 'cancelled';
+            task.revisionFeedback = null;
+            saveDatabase();
+            showToast(`Order #${task.orderNumber} cancelled.`, 'error');
+            closeReviewModal();
+            renderAdminManageTasks();
+        }
+    }
+}
+
+// ==================== TOAST & FORMATTERS ====================
+function showToast(message, type = 'info') {
+    const container = document.getElementById('toast-container');
+    if (!container) return;
+
+    const toast = document.createElement('div');
+    toast.className = `toast ${type}`;
+
+    let iconName = 'info';
+    if (type === 'success') iconName = 'check-circle';
+    else if (type === 'error') iconName = 'x-circle';
+    else if (type === 'warning') iconName = 'alert-triangle';
+
+    toast.innerHTML = `<i data-lucide="${iconName}"></i><span>${message}</span>`;
+    container.appendChild(toast);
+    lucide.createIcons();
+
+    setTimeout(() => {
+        toast.style.animation = 'fadeIn 0.3s ease-out reverse';
+        setTimeout(() => toast.remove(), 300);
+    }, 4000);
+}
+
+function formatDeadline(datetimeStr) {
+    if (!datetimeStr) return 'N/A';
+    const d = new Date(datetimeStr);
+    return d.toLocaleString([], { month: 'short', day: '2-digit', hour: '2-digit', minute: '2-digit' });
+}
+
+function formatDate(isoStr) {
+    if (!isoStr) return 'N/A';
+    const d = new Date(isoStr);
+    return d.toLocaleDateString([], { year: 'numeric', month: 'short', day: '2-digit' });
+}
+
+function formatChatTime(isoStr) {
+    if (!isoStr) return '';
+    const d = new Date(isoStr);
+    return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+}
+
+window.addEventListener('DOMContentLoaded', () => {
+    initDatabase();
+});
+
+</script>
+</body>
+</html>
