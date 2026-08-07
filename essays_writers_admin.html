@@ -2660,6 +2660,23 @@ function handleHireWriter(taskId, userId) {
 }
 
 // ==================== DISCUSSIONS & CHATS ====================
+function getTaskChatMessages(task) {
+    if (!task || !state.orderChats) return [];
+    const possibleKeys = [
+        task.id,
+        String(task.id),
+        task.orderNumber,
+        String(task.orderNumber),
+        `task-${task.orderNumber}`
+    ];
+    for (const key of possibleKeys) {
+        if (key !== undefined && key !== null && state.orderChats[key] && Array.isArray(state.orderChats[key]) && state.orderChats[key].length > 0) {
+            return state.orderChats[key];
+        }
+    }
+    return [];
+}
+
 function renderAdminOrderChats() {
     const list = document.getElementById('a-order-chat-list');
     list.innerHTML = '';
@@ -2672,7 +2689,8 @@ function renderAdminOrderChats() {
     }
 
     workingTasks.forEach(task => {
-        const activeClass = state.activeChatTaskId === task.id ? 'active' : '';
+        const isSelected = state.activeChatTaskId === task.id || String(state.activeChatTaskId) === String(task.id) || String(state.activeChatTaskId) === String(task.orderNumber);
+        const activeClass = isSelected ? 'active' : '';
         const item = document.createElement('div');
         item.className = `chat-list-item ${activeClass}`;
         item.onclick = () => selectAdminOrderChat(task.id);
@@ -2695,7 +2713,7 @@ function renderAdminOrderChats() {
 function selectAdminOrderChat(taskId) {
     loadDatabase();
     state.activeChatTaskId = taskId;
-    const task = state.tasks.find(t => t.id === taskId);
+    const task = state.tasks.find(t => t.id === taskId || String(t.id) === String(taskId) || String(t.orderNumber) === String(taskId));
     if (task && task.hasUnreadChatAdmin) {
         task.hasUnreadChatAdmin = false;
         saveDatabase();
@@ -2712,8 +2730,14 @@ function renderAdminActiveOrderChatPanel() {
         return;
     }
 
-    const task = state.tasks.find(t => t.id === state.activeChatTaskId);
-    const chats = state.orderChats[task.id] || [];
+    const task = state.tasks.find(t => t.id === state.activeChatTaskId || String(t.id) === String(state.activeChatTaskId) || String(t.orderNumber) === String(state.activeChatTaskId));
+    if (!task) {
+        main.innerHTML = `<div class="chat-empty-state"><i data-lucide="message-square" class="large-icon"></i><h3>Task not found.</h3></div>`;
+        lucide.createIcons();
+        return;
+    }
+
+    const chats = getTaskChatMessages(task);
     const writer = state.users.find(u => u.id === task.assignedTo);
 
     main.innerHTML = `
@@ -2728,14 +2752,18 @@ function renderAdminActiveOrderChatPanel() {
     `;
 
     const msgsContainer = document.getElementById('a-order-chat-messages-container');
-    chats.forEach(msg => {
-        const sideClass = msg.senderId === 'admin' ? 'sent' : 'received';
-        const bubble = document.createElement('div');
-        bubble.className = `chat-bubble ${sideClass}`;
-        bubble.innerHTML = `<strong>${msg.senderName}</strong><br>${msg.message}<span class="chat-time">${formatChatTime(msg.timestamp)}</span>`;
-        msgsContainer.appendChild(bubble);
-    });
-    msgsContainer.scrollTop = msgsContainer.scrollHeight;
+    if (chats.length === 0) {
+        msgsContainer.innerHTML = `<div style="margin: auto; text-align: center; color: var(--text-muted); font-size: 0.9rem; padding: 20px;"><i data-lucide="message-square" style="width: 32px; height: 32px; margin-bottom: 8px; opacity: 0.5;"></i><br>No messages in this order thread yet.<br><span style="font-size:0.8rem; opacity:0.8;">Type a message below to send instructions to the writer.</span></div>`;
+    } else {
+        chats.forEach(msg => {
+            const sideClass = msg.senderId === 'admin' ? 'sent' : 'received';
+            const bubble = document.createElement('div');
+            bubble.className = `chat-bubble ${sideClass}`;
+            bubble.innerHTML = `<strong>${msg.senderName}</strong><br>${msg.message}<span class="chat-time">${formatChatTime(msg.timestamp)}</span>`;
+            msgsContainer.appendChild(bubble);
+        });
+        msgsContainer.scrollTop = msgsContainer.scrollHeight;
+    }
     lucide.createIcons();
 }
 
@@ -2746,12 +2774,27 @@ function sendOrderMessageAdmin(event) {
     const msg = input.value.trim();
     if (!msg || !state.activeChatTaskId) return;
 
-    if (!state.orderChats[state.activeChatTaskId]) state.orderChats[state.activeChatTaskId] = [];
-    state.orderChats[state.activeChatTaskId].push({ senderId: 'admin', senderName: 'Admin', message: msg, timestamp: new Date().toISOString() });
-    
-    const task = state.tasks.find(t => t.id === state.activeChatTaskId);
-    if (task) task.hasUnreadChatWriter = true;
+    const task = state.tasks.find(t => t.id === state.activeChatTaskId || String(t.id) === String(state.activeChatTaskId) || String(t.orderNumber) === String(state.activeChatTaskId));
+    if (!task) return;
 
+    const msgObj = {
+        senderId: 'admin',
+        senderName: 'Admin',
+        message: msg,
+        timestamp: new Date().toISOString()
+    };
+
+    const key1 = task.id;
+    const key2 = String(task.orderNumber);
+
+    if (!state.orderChats[key1]) state.orderChats[key1] = [];
+    state.orderChats[key1].push(msgObj);
+
+    if (key2 && key2 !== String(key1)) {
+        state.orderChats[key2] = state.orderChats[key1];
+    }
+
+    task.hasUnreadChatWriter = true;
     saveDatabase();
     input.value = '';
     renderAdminActiveOrderChatPanel();
