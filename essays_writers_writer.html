@@ -2288,25 +2288,17 @@ function initDatabase() {
     }
     loadDatabase();
 
-    // Ensure default users exist
-    if (!state.users || state.users.length === 0) {
-        state.users = JSON.parse(JSON.stringify(MOCK_USERS));
-        saveDatabase();
-    }
-
     updateSystemTime();
     setInterval(updateSystemTime, 60000);
 
-    // Auto log-in saved user session or default first writer so portal opens directly
+    // Auto log-in ONLY if there's a saved session from a previous login
     const savedUserId = localStorage.getItem('ew_session_user_id');
-    let userToLogin = state.users.find(u => u.id === savedUserId);
-    if (!userToLogin && state.users.length > 0) {
-        userToLogin = state.users[0];
-    }
+    const userToLogin = savedUserId ? state.users.find(u => u.id === savedUserId) : null;
 
     if (userToLogin) {
         loginAs(userToLogin);
     } else {
+        // No saved session — show login screen
         document.getElementById('auth-container').classList.remove('hidden');
         document.getElementById('portal-container').classList.add('hidden');
         setAuthView('writer-login');
@@ -2863,6 +2855,7 @@ function handleSubmitWork(event) {
 
 // ==================== DISCUSSIONS ====================
 function renderWriterOrderChats() {
+    loadDatabase(); // Always fetch latest messages from storage
     const list = document.getElementById('w-order-chat-list');
     list.innerHTML = '';
 
@@ -2925,6 +2918,7 @@ function selectOrderChat(taskId) {
 }
 
 function renderActiveOrderChatPanel() {
+    loadDatabase(); // Always fetch latest messages from storage
     const main = document.getElementById('w-order-chat-main');
     if (!state.activeChatTaskId) {
         main.innerHTML = `<div class="chat-empty-state"><i data-lucide="message-square" class="large-icon"></i><h3>Select a task order thread.</h3></div>`;
