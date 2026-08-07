@@ -2382,6 +2382,17 @@ function renderAdminUserControl() {
 
     state.users.forEach(u => {
         const comps = state.tasks.filter(t => t.assignedTo === u.id && t.status === 'completed').length;
+        const isVer = u.isVerified !== false;
+        const verBadgeHTML = isVer
+            ? `<span class="status-badge green">✓ Verified</span>`
+            : (u.verificationRequested 
+                ? `<span class="status-badge amber" style="background:#f59e0b; color:#fff; font-weight:700;">⚠️ Paid - Pending Verify</span>`
+                : `<span class="status-badge amber">Unverified (KSh 600)</span>`);
+
+        const verifyActionBtnHTML = isVer
+            ? `<button class="btn btn-outline btn-sm" onclick="handleUnverifyUserAccount('${u.id}')" title="Mark account as unverified"><i data-lucide="x-circle"></i> Unverify</button>`
+            : `<button class="btn btn-success btn-sm" style="background:#10b981; color:#fff;" onclick="handleVerifyUserAccount('${u.id}')" title="Verify account and credit $4.64 (KSh 600 fee) to wallet"><i data-lucide="check-circle-2"></i> Verify & Credit $4.64</button>`;
+
         const tr = document.createElement('tr');
         tr.innerHTML = `
             <td>#${u.id.split('-').pop()}</td>
@@ -2390,16 +2401,64 @@ function renderAdminUserControl() {
             <td>${u.phone}</td>
             <td class="text-center font-bold">${comps}</td>
             <td class="text-emerald font-bold">$${u.balance.toFixed(2)}</td>
-            <td><span class="user-status-active">Active</span></td>
+            <td>${verBadgeHTML}</td>
             <td>
-                <button class="btn btn-danger btn-sm" onclick="handleDeleteUser('${u.id}')" title="Permanently delete user account">
-                    <i data-lucide="trash-2"></i> Delete
-                </button>
+                <div style="display:flex; gap:6px; flex-wrap:wrap;">
+                    ${verifyActionBtnHTML}
+                    <button class="btn btn-danger btn-sm" onclick="handleDeleteUser('${u.id}')" title="Permanently delete user account">
+                        <i data-lucide="trash-2"></i> Delete
+                    </button>
+                </div>
             </td>
         `;
         tbody.appendChild(tr);
     });
     lucide.createIcons();
+}
+
+function handleVerifyUserAccount(userId) {
+    loadDatabase();
+    const user = state.users.find(u => u.id === userId);
+    if (!user) return;
+
+    if (confirm(`Approve verification for "${user.name}" (${user.email})?
+
+This will mark their account as Verified and automatically deposit $4.64 USD (KSh 600 commitment fee) into their wallet balance!`)) {
+        user.isVerified = true;
+        user.verificationRequested = false;
+        user.balance = (parseFloat(user.balance) || 0) + 4.64;
+
+        // Auto notification in support chat
+        if (!state.supportChats[user.id]) state.supportChats[user.id] = [];
+        state.supportChats[user.id].push({
+            id: 'sup-' + Date.now(),
+            senderId: 'admin',
+            senderName: 'Admin',
+            message: `CONGRATULATIONS! Your account has been verified successfully. KSh 600 ($4.64 USD) has been deposited into your wallet balance. You can now claim tasks!`,
+            timestamp: new Date().toISOString(),
+            readByAdmin: true,
+            readByWriter: false
+        });
+
+        saveDatabase();
+        showToast(`Account "${user.name}" verified! $4.64 USD deposited into their wallet.`, 'success');
+        renderAdminUserControl();
+        updateAdminBadges();
+    }
+}
+
+function handleUnverifyUserAccount(userId) {
+    loadDatabase();
+    const user = state.users.find(u => u.id === userId);
+    if (!user) return;
+
+    if (confirm(`Set account "${user.name}" as Unverified? They will be unable to claim tasks until re-verified.`)) {
+        user.isVerified = false;
+        saveDatabase();
+        showToast(`Account "${user.name}" is now unverified.`, 'info');
+        renderAdminUserControl();
+        updateAdminBadges();
+    }
 }
 
 function handleDeleteUser(userId) {
