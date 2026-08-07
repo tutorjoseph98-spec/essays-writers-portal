@@ -1933,6 +1933,7 @@ tr:hover td {
                                     <tr>
                                         <th>Request ID</th>
                                         <th>Writer</th>
+                                        <th>Payment Method & Details</th>
                                         <th>Amount Requested</th>
                                         <th>Request Date</th>
                                         <th>Action</th>
@@ -2792,15 +2793,17 @@ function renderAdminWithdrawals() {
     const pendings = state.withdrawals.filter(w => w.status === 'pending');
 
     if (pendings.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="5" class="text-center">No cashout requests pending approval.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="6" class="text-center">No cashout requests pending approval.</td></tr>`;
         return;
     }
 
     pendings.forEach(w => {
+        const methodStr = w.paymentMethod ? `<strong>${w.paymentMethod}</strong><br><span class="text-xs text-muted">${w.paymentDetails || ''}</span>` : '<span class="text-muted">Not specified</span>';
         const tr = document.createElement('tr');
         tr.innerHTML = `
             <td>#${w.id.split('-').pop()}</td>
             <td><strong class="text-indigo">${w.userName}</strong></td>
+            <td>${methodStr}</td>
             <td class="text-emerald font-bold">$${w.amount.toFixed(2)}</td>
             <td>${formatDate(w.timestamp)}</td>
             <td>
