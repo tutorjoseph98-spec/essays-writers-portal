@@ -1625,6 +1625,82 @@ tr:hover td {
     color: var(--text-muted);
 }
 
+/* ==================== STATUS TRACKER (MY ORDERS SIDEBAR) ==================== */
+.status-tracker-list {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 8px 0;
+}
+
+.status-tracker-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    width: 100%;
+    background: transparent;
+    border: none;
+    border-left: 3px solid transparent;
+    padding: 12px 16px;
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.2s ease;
+    border-radius: 0 8px 8px 0;
+    color: var(--text-main);
+}
+
+.status-tracker-item:hover {
+    background: rgba(255,255,255,0.05);
+    border-left-color: var(--color-primary);
+}
+
+.status-tracker-item.active {
+    background: rgba(99, 102, 241, 0.1);
+    border-left-color: var(--color-primary);
+}
+
+.status-tracker-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+.status-tracker-icon svg { width: 16px; height: 16px; }
+
+.status-tracker-icon.all       { background: rgba(99, 102, 241, 0.15); color: #818cf8; }
+.status-tracker-icon.progress  { background: rgba(59, 130, 246, 0.15); color: #60a5fa; }
+.status-tracker-icon.review    { background: rgba(16, 185, 129, 0.15); color: #34d399; }
+.status-tracker-icon.completed { background: rgba(16, 185, 129, 0.15); color: #34d399; }
+.status-tracker-icon.revision  { background: rgba(244, 63, 94, 0.15);  color: #fb7185; }
+.status-tracker-icon.cancelled { background: rgba(244, 63, 94, 0.15);  color: #fb7185; }
+
+.status-tracker-label {
+    flex: 1;
+    font-size: 0.92rem;
+    font-weight: 500;
+    color: var(--text-main);
+}
+
+.status-tracker-badge {
+    min-width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    font-weight: 700;
+    flex-shrink: 0;
+    padding: 0 6px;
+}
+
+.status-tracker-badge.blue { background: #2563eb; color: #fff; }
+.status-tracker-badge.red  { background: #e11d48; color: #fff; }
+
+
 </style>
 </head>
 <body>
