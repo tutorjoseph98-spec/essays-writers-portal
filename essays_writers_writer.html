@@ -2287,8 +2287,30 @@ function initDatabase() {
         localStorage.setItem('ew_db_initialized', 'true');
     }
     loadDatabase();
+
+    // Ensure default users exist
+    if (!state.users || state.users.length === 0) {
+        state.users = JSON.parse(JSON.stringify(MOCK_USERS));
+        saveDatabase();
+    }
+
     updateSystemTime();
     setInterval(updateSystemTime, 60000);
+
+    // Auto log-in saved user session or default first writer so portal opens directly
+    const savedUserId = localStorage.getItem('ew_session_user_id');
+    let userToLogin = state.users.find(u => u.id === savedUserId);
+    if (!userToLogin && state.users.length > 0) {
+        userToLogin = state.users[0];
+    }
+
+    if (userToLogin) {
+        loginAs(userToLogin);
+    } else {
+        document.getElementById('auth-container').classList.remove('hidden');
+        document.getElementById('portal-container').classList.add('hidden');
+        setAuthView('writer-login');
+    }
 }
 
 function loadDatabase() {
@@ -2448,6 +2470,7 @@ function handleResetPasswordSubmit(event) {
 
 function loginAs(userObj) {
     state.currentUser = userObj;
+    localStorage.setItem('ew_session_user_id', userObj.id);
     document.getElementById('auth-container').classList.add('hidden');
     document.getElementById('portal-container').classList.remove('hidden');
 
@@ -2461,6 +2484,7 @@ function loginAs(userObj) {
 
 function handleLogout() {
     state.currentUser = null;
+    localStorage.removeItem('ew_session_user_id');
     document.getElementById('portal-container').classList.add('hidden');
     document.getElementById('auth-container').classList.remove('hidden');
     setAuthView('writer-login');
