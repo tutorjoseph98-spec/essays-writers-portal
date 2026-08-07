@@ -1745,32 +1745,32 @@ tr:hover td {
                 <a href="#" class="nav-item active" data-tab="a-users" onclick="switchTab('a-users')">
                     <i data-lucide="users"></i>
                     <span>User Control</span>
-                    <span class="nav-badge" id="a-badge-users">0</span>
+                    <span class="nav-badge" id="a-badge-users" style="display: none;">0</span>
                 </a>
                 <a href="#" class="nav-item" data-tab="a-tasks" onclick="switchTab('a-tasks')">
                     <i data-lucide="folder-kanban"></i>
                     <span>Manage Tasks</span>
-                    <span class="nav-badge" id="a-badge-tasks">0</span>
+                    <span class="nav-badge" id="a-badge-tasks" style="display: none;">0</span>
                 </a>
                 <a href="#" class="nav-item" data-tab="a-claims" onclick="switchTab('a-claims')">
                     <i data-lucide="user-check"></i>
                     <span>Pending Claims</span>
-                    <span class="nav-badge badge-amber" id="a-badge-claims">0</span>
+                    <span class="nav-badge badge-amber" id="a-badge-claims" style="display: none;">0</span>
                 </a>
                 <a href="#" class="nav-item" data-tab="a-order-chats" onclick="switchTab('a-order-chats')">
                     <i data-lucide="message-square"></i>
                     <span>Order Chats</span>
-                    <span class="nav-badge badge-purple" id="a-badge-order-chats">0</span>
+                    <span class="nav-badge badge-purple" id="a-badge-order-chats" style="display: none;">0</span>
                 </a>
                 <a href="#" class="nav-item" data-tab="a-support" onclick="switchTab('a-support')">
                     <i data-lucide="message-circle"></i>
                     <span>Support Chat</span>
-                    <span class="nav-badge" id="a-badge-support">0</span>
+                    <span class="nav-badge" id="a-badge-support" style="display: none;">0</span>
                 </a>
                 <a href="#" class="nav-item" data-tab="a-withdrawals" onclick="switchTab('a-withdrawals')">
                     <i data-lucide="banknote"></i>
                     <span>Withdrawal</span>
-                    <span class="nav-badge badge-emerald" id="a-badge-withdrawals">0</span>
+                    <span class="nav-badge badge-emerald" id="a-badge-withdrawals" style="display: none;">0</span>
                 </a>
             </nav>
 
@@ -1798,7 +1798,7 @@ tr:hover td {
         <main class="main-content">
             <header class="main-header">
                 <div class="header-left">
-                    <h2 class="page-title" id="page-title-text">Dashboard</h2>
+                    <h2 class="page-title" id="page-title-text">User Control</h2>
                 </div>
                 <div class="header-right">
                     <div class="header-stat">
@@ -1819,25 +1819,29 @@ tr:hover td {
                                 <h3 class="card-number" id="a-stat-writers-count">0</h3>
                             </div>
                         </div>
-                        <div class="stat-card glass-panel glow-purple">
-                            <div class="stat-icon-wrapper purple"><i data-lucide="file-check"></i></div>
+                        <div class="stat-card glass-panel glow-amber">
+                            <div class="stat-icon-wrapper amber"><i data-lucide="user-check"></i></div>
                             <div class="stat-details">
-                                <span class="card-label">Total Claims Pending</span>
+                                <span class="card-label">Total Task Claims</span>
                                 <h3 class="card-number" id="a-stat-claims-count">0</h3>
                             </div>
                         </div>
                         <div class="stat-card glass-panel glow-emerald">
-                            <div class="stat-icon-wrapper emerald"><i data-lucide="dollar-sign"></i></div>
+                            <div class="stat-icon-wrapper emerald"><i data-lucide="banknote"></i></div>
                             <div class="stat-details">
-                                <span class="card-label">Payouts Pending</span>
+                                <span class="card-label">Pending Payouts</span>
                                 <h3 class="card-number" id="a-stat-withdrawals-count">0</h3>
                             </div>
                         </div>
                     </div>
 
                     <div class="dashboard-card glass-panel">
-                        <div class="card-header">
+                        <div class="card-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
                             <h3>Writer Database Controls</h3>
+                            <div style="position: relative; min-width: 280px;">
+                                <input type="text" id="a-user-search-input" placeholder="Search by Writer Name or Writer ID..." oninput="renderAdminUserControl()" style="width: 100%; padding: 8px 12px 8px 36px; background: rgba(0,0,0,0.3); border: 1px solid var(--border-color); border-radius: var(--radius-sm); color: #fff; font-size: 0.85rem;">
+                                <i data-lucide="search" style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%); width: 16px; height: 16px; color: var(--text-muted);"></i>
+                            </div>
                         </div>
                         <div class="table-container">
                             <table class="users-table">
@@ -2217,6 +2221,27 @@ function saveDatabase() {
     localStorage.setItem('ew_support_chats', JSON.stringify(state.supportChats));
 }
 
+// Cross-tab real-time sync listeners
+window.addEventListener('storage', () => {
+    loadDatabase();
+    updateAdminBadges();
+    const activeTab = document.querySelector('.nav-item.active');
+    if (activeTab) {
+        const tabId = activeTab.getAttribute('data-tab');
+        if (tabId) onTabLoad(tabId);
+    }
+});
+
+setInterval(() => {
+    loadDatabase();
+    updateAdminBadges();
+    const activeTab = document.querySelector('.nav-item.active');
+    if (activeTab) {
+        const tabId = activeTab.getAttribute('data-tab');
+        if (tabId) onTabLoad(tabId);
+    }
+}, 3000);
+
 function resetDatabase() {
     localStorage.removeItem('ew_db_initialized');
     localStorage.removeItem('ew_users');
@@ -2306,40 +2331,67 @@ function onTabLoad(tabId) {
 function updateAdminBadges() {
     loadDatabase();
 
+    // 1. Users Badge (Hide if 0)
     const badgeUsers = document.getElementById('a-badge-users');
-    if (badgeUsers) badgeUsers.textContent = state.users.length;
-
-    const badgeTasks = document.getElementById('a-badge-tasks');
-    if (badgeTasks) badgeTasks.textContent = state.tasks.length;
-
-    const claimsCount = state.tasks.filter(t => t.status === 'available' && t.claims && t.claims.length > 0).reduce((acc, t) => acc + t.claims.length, 0);
-    const badgeClaims = document.getElementById('a-badge-claims');
-    if (badgeClaims) badgeClaims.textContent = claimsCount;
-
-    // Count order chats with unread messages for admin (or active working tasks)
-    const workingTasksCount = state.tasks.filter(t => t.assignedTo && ['in_progress', 'in_revision', 'in_review'].includes(t.status) && t.hasUnreadChatAdmin).length;
-    const badgeOrderChats = document.getElementById('a-badge-order-chats');
-    if (badgeOrderChats) {
-        badgeOrderChats.textContent = workingTasksCount > 0 ? workingTasksCount : state.tasks.filter(t => t.assignedTo && ['in_progress', 'in_revision', 'in_review'].includes(t.status)).length;
-        if (workingTasksCount > 0) badgeOrderChats.style.background = 'var(--color-danger)';
-        else badgeOrderChats.style.background = '';
+    if (badgeUsers) {
+        const cnt = state.users.length;
+        badgeUsers.textContent = cnt;
+        badgeUsers.style.display = cnt > 0 ? 'inline-flex' : 'none';
     }
 
-    // Support unread
+    // 2. Tasks Badge (Hide if 0)
+    const badgeTasks = document.getElementById('a-badge-tasks');
+    if (badgeTasks) {
+        const cnt = state.tasks.length;
+        badgeTasks.textContent = cnt;
+        badgeTasks.style.display = cnt > 0 ? 'inline-flex' : 'none';
+    }
+
+    // 3. Claims Badge (Hide if 0)
+    const claimsCount = state.tasks.filter(t => t.status === 'available' && t.claims && t.claims.length > 0).reduce((acc, t) => acc + t.claims.length, 0);
+    const badgeClaims = document.getElementById('a-badge-claims');
+    if (badgeClaims) {
+        badgeClaims.textContent = claimsCount;
+        badgeClaims.style.display = claimsCount > 0 ? 'inline-flex' : 'none';
+    }
+
+    // 4. Order Chats Badge (Show ONLY when there are UNREAD messages for Admin)
+    const unreadOrderChats = state.tasks.filter(t => t.assignedTo && ['in_progress', 'in_revision', 'in_review'].includes(t.status) && t.hasUnreadChatAdmin).length;
+    const badgeOrderChats = document.getElementById('a-badge-order-chats');
+    if (badgeOrderChats) {
+        if (unreadOrderChats > 0) {
+            badgeOrderChats.textContent = unreadOrderChats + ' NEW';
+            badgeOrderChats.style.background = '#ef4444';
+            badgeOrderChats.style.display = 'inline-flex';
+        } else {
+            badgeOrderChats.style.display = 'none';
+        }
+    }
+
+    // 5. Support Badge (Show ONLY when there are UNREAD messages for Admin)
     let supportUnread = 0;
     Object.keys(state.supportChats || {}).forEach(k => {
         if (state.supportChats[k].some(m => m.senderId === k && !m.readByAdmin)) supportUnread++;
     });
     const badgeSupport = document.getElementById('a-badge-support');
     if (badgeSupport) {
-        badgeSupport.textContent = supportUnread > 0 ? supportUnread : Object.keys(state.supportChats || {}).length;
-        if (supportUnread > 0) badgeSupport.style.background = 'var(--color-danger)';
-        else badgeSupport.style.background = '';
+        if (supportUnread > 0) {
+            badgeSupport.textContent = supportUnread + ' NEW';
+            badgeSupport.style.background = '#ef4444';
+            badgeSupport.style.display = 'inline-flex';
+        } else {
+            badgeSupport.style.display = 'none';
+        }
     }
 
-    const pendingWithdrawalsCount = state.withdrawals.filter(w => w.status === 'pending').length;
+    // 6. Withdrawals Badge (Hide if 0)
+    const pendingWithdrawals = state.withdrawals.filter(w => w.status === 'pending').length;
     const badgeWithdrawals = document.getElementById('a-badge-withdrawals');
-    if (badgeWithdrawals) badgeWithdrawals.textContent = pendingWithdrawalsCount;
+    if (badgeWithdrawals) {
+        badgeWithdrawals.textContent = pendingWithdrawals;
+        badgeWithdrawals.style.display = pendingWithdrawals > 0 ? 'inline-flex' : 'none';
+    }
+}
 
     const cntAll = state.tasks.length;
     const cntAvail = state.tasks.filter(t => t.status === 'available').length;
@@ -2349,21 +2401,36 @@ function updateAdminBadges() {
     const cntCompleted = state.tasks.filter(t => t.status === 'completed').length;
     const cntCancelled = state.tasks.filter(t => t.status === 'cancelled').length;
 
-    if (document.getElementById('a-cnt-all')) document.getElementById('a-cnt-all').textContent = cntAll;
-    if (document.getElementById('a-cnt-available')) document.getElementById('a-cnt-available').textContent = cntAvail;
-    if (document.getElementById('a-cnt-progress')) document.getElementById('a-cnt-progress').textContent = cntProgress;
-    
+    const subTabBadges = [
+        { id: 'a-cnt-all', cnt: cntAll },
+        { id: 'a-cnt-available', cnt: cntAvail },
+        { id: 'a-cnt-progress', cnt: cntProgress },
+        { id: 'a-cnt-revision', cnt: cntRevision },
+        { id: 'a-cnt-completed', cnt: cntCompleted },
+        { id: 'a-cnt-cancelled', cnt: cntCancelled }
+    ];
+
+    subTabBadges.forEach(item => {
+        const el = document.getElementById(item.id);
+        if (el) {
+            el.textContent = item.cnt;
+            el.style.display = item.cnt > 0 ? 'inline-flex' : 'none';
+        }
+    });
+
     const elReview = document.getElementById('a-cnt-review');
     if (elReview) {
         elReview.textContent = cntReview;
         const unreadReview = state.tasks.filter(t => t.status === 'in_review' && t.hasUnreadSubmission).length;
-        if (unreadReview > 0) { elReview.style.background = 'var(--color-danger)'; elReview.textContent = cntReview + ' (Unread)'; }
-        else { elReview.style.background = ''; }
+        if (unreadReview > 0) {
+            elReview.style.background = '#ef4444';
+            elReview.textContent = cntReview + ' NEW';
+            elReview.style.display = 'inline-flex';
+        } else {
+            elReview.style.background = '';
+            elReview.style.display = cntReview > 0 ? 'inline-flex' : 'none';
+        }
     }
-
-    if (document.getElementById('a-cnt-revision')) document.getElementById('a-cnt-revision').textContent = cntRevision;
-    if (document.getElementById('a-cnt-completed')) document.getElementById('a-cnt-completed').textContent = cntCompleted;
-    if (document.getElementById('a-cnt-cancelled')) document.getElementById('a-cnt-cancelled').textContent = cntCancelled;
 }
 
 // ==================== ADMIN CORE OPERATIONS ====================
