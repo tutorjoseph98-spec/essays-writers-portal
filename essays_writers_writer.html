@@ -1842,8 +1842,13 @@ tr:hover td {
                 <div class="user-profile-widget">
                     <div class="user-avatar" id="nav-avatar">W</div>
                     <div class="user-info">
-                        <div class="username" id="nav-username">Writer Username</div>
+                        <div style="display: flex; align-items: center; gap: 6px;">
+                            <span class="username" id="nav-username">Writer Username</span>
+                        </div>
                         <div class="user-role" id="nav-user-email">writer@email.com</div>
+                        <div style="margin-top: 4px;">
+                            <span id="nav-verification-badge" class="status-badge amber" style="font-size: 0.65rem; padding: 2px 8px; border-radius: 12px; cursor: pointer;" onclick="openPaybillVerificationModal()">⚠️ Unverified (Pay KSh 600)</span>
+                        </div>
                     </div>
                     <button class="btn-logout" onclick="handleLogout()" title="Log out">
                         <i data-lucide="log-out"></i>
@@ -1859,6 +1864,10 @@ tr:hover td {
                     <h2 class="page-title" id="page-title-text">Dashboard</h2>
                 </div>
                 <div class="header-right">
+                    <div class="header-stat" id="writer-header-verification-container">
+                        <span class="stat-label">Account Status:</span>
+                        <span class="stat-value" id="writer-header-verification-badge" style="cursor: pointer;" onclick="openPaybillVerificationModal()">Unverified</span>
+                    </div>
                     <div class="header-stat" id="writer-header-balance-container">
                         <span class="stat-label">My Balance:</span>
                         <span class="stat-value text-emerald" id="writer-header-balance">$0.00</span>
@@ -2201,6 +2210,69 @@ tr:hover td {
                 </div>
             </div>
         </div>
+    <!-- ACCOUNT VERIFICATION & COMMITMENT FEE MODAL -->
+    <div id="modal-paybill-verification" class="modal-overlay hidden">
+        <div class="modal-card large-modal" style="max-width: 680px;">
+            <div class="modal-header" style="border-bottom: 1px solid var(--border-color); padding-bottom: 14px;">
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <i data-lucide="shield-alert" class="text-amber" style="width: 32px; height: 32px;"></i>
+                    <div>
+                        <h3 style="margin: 0; font-size: 1.25rem;">Account Verification Required (KSh 600)</h3>
+                        <p class="modal-subtitle" style="margin: 4px 0 0 0; font-size: 0.85rem; color: var(--text-muted);">Commitment deposit required to separate serious writers from uncommitted users.</p>
+                    </div>
+                </div>
+                <button class="modal-close" onclick="closePaybillVerificationModal()">&times;</button>
+            </div>
+            <div class="modal-body" style="padding-top: 16px;">
+                <div class="alert-box amber" style="background: rgba(245, 158, 11, 0.12); border: 1px solid rgba(245, 158, 11, 0.4); padding: 16px; border-radius: 8px; margin-bottom: 20px;">
+                    <strong style="color: #fbbf24; font-size: 1rem; display: flex; align-items: center; gap: 6px;">
+                        <i data-lucide="info"></i> Why is this KSh 600 commitment payment required?
+                    </strong>
+                    <p style="margin-top: 8px; font-size: 0.88rem; line-height: 1.5; color: var(--text-main);">
+                        To maintain high quality & ensure writers are serious about doing assignments, all accounts must be verified with a <strong>KSh 600</strong> commitment fee before claiming tasks.
+                        <br><br>
+                        <strong style="color: #34d399;">💵 Instant Wallet Deposit:</strong> Upon Admin verification of your payment, <strong>KSh 600 ($4.64 USD) will be automatically deposited directly into your wallet balance</strong> for immediate withdrawal or future earnings!
+                    </p>
+                </div>
+
+                <div class="paybill-card glass-panel" style="background: linear-gradient(135deg, rgba(99, 102, 241, 0.15), rgba(16, 185, 129, 0.15)); border: 2px solid var(--color-primary); padding: 20px; border-radius: 12px; text-align: center;">
+                    <span class="status-badge amber" style="font-size: 0.85rem; padding: 4px 14px; border-radius: 20px; font-weight: 700;">M-PESA PAYBILL PAYMENT DETAILS</span>
+                    
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 14px; margin-top: 16px; text-align: left;">
+                        <div style="background: rgba(0,0,0,0.35); padding: 14px; border-radius: 8px; border: 1px solid var(--border-color);">
+                            <span style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase;">Business No / Paybill</span>
+                            <div style="font-size: 1.5rem; font-weight: 800; color: #818cf8; letter-spacing: 1px; margin-top: 2px;">4077213</div>
+                        </div>
+                        <div style="background: rgba(0,0,0,0.35); padding: 14px; border-radius: 8px; border: 1px solid var(--border-color);">
+                            <span style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase;">Account No</span>
+                            <div style="font-size: 1.5rem; font-weight: 800; color: #10b981; letter-spacing: 1px; margin-top: 2px;">ww#63423</div>
+                        </div>
+                        <div style="background: rgba(0,0,0,0.35); padding: 14px; border-radius: 8px; border: 1px solid var(--border-color);">
+                            <span style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase;">Amount to Pay</span>
+                            <div style="font-size: 1.5rem; font-weight: 800; color: #fbbf24; margin-top: 2px;">KSh 600</div>
+                        </div>
+                        <div style="background: rgba(0,0,0,0.35); padding: 14px; border-radius: 8px; border: 1px solid var(--border-color);">
+                            <span style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase;">Wallet Credit Refund</span>
+                            <div style="font-size: 1.5rem; font-weight: 800; color: #34d399; margin-top: 2px;">$4.64 USD</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="margin-top: 16px; background: rgba(0,0,0,0.2); padding: 14px; border-radius: 8px;">
+                    <h5 style="margin: 0 0 6px 0; color: var(--text-main); font-size: 0.9rem;">How to complete payment & unlock task claiming:</h5>
+                    <ol style="margin: 0 0 0 18px; font-size: 0.85rem; color: var(--text-muted); line-height: 1.5;">
+                        <li>Open M-PESA menu -> Lipa na M-PESA -> Paybill.</li>
+                        <li>Business Number: <strong style="color: #818cf8;">4077213</strong> | Account Number: <strong style="color: #10b981;">ww#63423</strong></li>
+                        <li>Amount: <strong>600</strong> -> Enter M-PESA PIN to complete payment.</li>
+                        <li>Click <strong>"I Have Paid KSh 600 - Request Verification"</strong> below so Admin verifies and deposits <strong>$4.64</strong> to your wallet balance.</li>
+                    </ol>
+                </div>
+            </div>
+            <div class="modal-footer" style="display: flex; justify-content: space-between; align-items: center; width: 100%; margin-top: 16px;">
+                <button type="button" class="btn btn-outline" onclick="closePaybillVerificationModal()">Close</button>
+                <button type="button" class="btn btn-primary" onclick="requestAdminVerificationNotice()"><i data-lucide="check-circle-2"></i> I Have Paid KSh 600 - Request Verification</button>
+            </div>
+        </div>
     </div>
 
     <script>
@@ -2222,8 +2294,8 @@ let state = {
 
 // Initial Mock Seed Data (Matching Admin database setup)
 const MOCK_USERS = [
-    { id: 'user-alex', name: 'Alex Rivera', email: 'alex@writers.com', phone: '+1234567890', password: 'password123', balance: 15.40, completedTasksCount: 2 },
-    { id: 'user-sarah', name: 'Sarah Connor', email: 'sarah@writers.com', phone: '+1987654321', password: 'password123', balance: 0.00, completedTasksCount: 0 }
+    { id: 'user-alex', name: 'Alex Rivera', email: 'alex@writers.com', phone: '+1234567890', password: 'password123', balance: 15.40, completedTasksCount: 2, isVerified: true },
+    { id: 'user-sarah', name: 'Sarah Connor', email: 'sarah@writers.com', phone: '+1987654321', password: 'password123', balance: 0.00, completedTasksCount: 0, isVerified: true }
 ];
 
 const MOCK_TASKS = [
@@ -2401,13 +2473,14 @@ function handleWriterRegister(event) {
         return;
     }
 
-    const newUser = { id: 'user-' + Date.now(), name, email, phone, password: pass, balance: 0.00, completedTasksCount: 0 };
+    const newUser = { id: 'user-' + Date.now(), name, email, phone, password: pass, balance: 0.00, completedTasksCount: 0, isVerified: false, verificationRequested: false };
     state.users.push(newUser);
     saveDatabase();
     
     loginAs(newUser);
-    showToast('Registration successful! Welcome to Essays Writers.', 'success');
+    showToast('Registration successful! Please pay KSh 600 commitment fee to verify your account and start claiming tasks.', 'info');
     document.getElementById('form-writer-register').reset();
+    openPaybillVerificationModal();
 }
 
 function handleVerifyRecovery(event) {
@@ -2460,6 +2533,39 @@ function handleResetPasswordSubmit(event) {
     }
 }
 
+function updateVerificationBadges(userObj) {
+    if (!userObj) return;
+    const isVer = !!userObj.isVerified;
+
+    const navBadge = document.getElementById('nav-verification-badge');
+    if (navBadge) {
+        if (isVer) {
+            navBadge.className = 'status-badge green';
+            navBadge.textContent = '✓ Verified Writer';
+            navBadge.title = 'Account verified';
+            navBadge.onclick = null;
+        } else {
+            navBadge.className = 'status-badge amber';
+            navBadge.textContent = '⚠️ Unverified (Pay KSh 600)';
+            navBadge.title = 'Click to view KSh 600 Paybill details';
+            navBadge.onclick = () => openPaybillVerificationModal();
+        }
+    }
+
+    const headerBadge = document.getElementById('writer-header-verification-badge');
+    if (headerBadge) {
+        if (isVer) {
+            headerBadge.className = 'stat-value text-emerald';
+            headerBadge.textContent = 'Verified Writer';
+            headerBadge.onclick = null;
+        } else {
+            headerBadge.className = 'stat-value text-amber';
+            headerBadge.textContent = 'Unverified (Pay KSh 600)';
+            headerBadge.onclick = () => openPaybillVerificationModal();
+        }
+    }
+}
+
 function loginAs(userObj) {
     state.currentUser = userObj;
     localStorage.setItem('ew_session_user_id', userObj.id);
@@ -2469,6 +2575,8 @@ function loginAs(userObj) {
     document.getElementById('nav-username').textContent = userObj.name;
     document.getElementById('nav-user-email').textContent = userObj.email;
     document.getElementById('nav-avatar').textContent = userObj.name.charAt(0).toUpperCase();
+
+    updateVerificationBadges(userObj);
 
     document.getElementById('writer-header-balance-container').classList.remove('hidden');
     switchTab('w-dashboard');
@@ -2628,6 +2736,14 @@ function renderWriterAvailableTasks() {
 
 function handleClaimTask(taskId) {
     loadDatabase();
+    if (!state.currentUser) return;
+    const user = state.users.find(u => u.id === state.currentUser.id);
+    if (!user || !user.isVerified) {
+        showToast('Account verification required. Please pay KSh 600 commitment fee to unlock task claiming.', 'warning');
+        openPaybillVerificationModal();
+        return;
+    }
+
     const task = state.tasks.find(t => t.id === taskId);
     if (!task) return;
 
@@ -2640,6 +2756,48 @@ function handleClaimTask(taskId) {
             openViewAvailableTaskModal(taskId);
         }
         renderWriterAvailableTasks();
+        updateWriterBadges();
+    }
+}
+
+function openPaybillVerificationModal() {
+    loadDatabase();
+    const modal = document.getElementById('modal-paybill-verification');
+    if (modal) {
+        modal.classList.remove('hidden');
+        lucide.createIcons();
+    }
+}
+
+function closePaybillVerificationModal() {
+    const modal = document.getElementById('modal-paybill-verification');
+    if (modal) modal.classList.add('hidden');
+}
+
+function requestAdminVerificationNotice() {
+    loadDatabase();
+    if (!state.currentUser) return;
+
+    const user = state.users.find(u => u.id === state.currentUser.id);
+    if (user) {
+        user.verificationRequested = true;
+        
+        // Auto-post verification message into Support Chat
+        if (!state.supportChats[user.id]) state.supportChats[user.id] = [];
+        state.supportChats[user.id].push({
+            id: 'sup-' + Date.now(),
+            senderId: user.id,
+            senderName: user.name,
+            message: `Hi Admin, I have completed the KSh 600 commitment fee payment via M-Pesa Paybill 4077213 (Account: ww#63423). Please verify my account and credit $4.64 USD to my wallet balance.`,
+            timestamp: new Date().toISOString(),
+            readByAdmin: false,
+            readByWriter: true
+        });
+
+        saveDatabase();
+        closePaybillVerificationModal();
+        showToast('Verification request sent to Admin! KSh 600 ($4.64 USD) will be credited to your wallet upon verification.', 'success');
+        updateWriterBadges();
     }
 }
 
@@ -3257,38 +3415,16 @@ function formatDate(isoStr) {
 }
 
 function formatChatTime(isoStr) {
-    // Mark admin messages as read by writer
-    let updated = false;
-    chats.forEach(m => {
-        if (m.senderId === 'admin' && !m.readByWriter) {
-            m.readByWriter = true;
-            updated = true;
-        }
-    });
-
-    if (updated) {
-        saveDatabase();
-        updateWriterBadges();
-    }
-
-    if (chats.length === 0) {
-        container.innerHTML = `<div class="text-center text-muted" style="margin:auto;">Hi! Initiate direct support concern messages here.</div>`;
-        return;
-    }
-
-    chats.forEach(msg => {
-        const sideClass = msg.senderId === state.currentUser.id ? 'sent' : 'received';
-        const bubble = document.createElement('div');
-        bubble.className = `chat-bubble ${sideClass}`;
-        bubble.innerHTML = `${msg.message}<span class="chat-time">${formatChatTime(msg.timestamp)}</span>`;
-        container.appendChild(bubble);
-    });
-    container.scrollTop = container.scrollHeight;
+    if (!isoStr) return '';
+    const d = new Date(isoStr);
+    return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 }
+
 // ==================== BADGE COUNTERS & UNREAD NOTIFICATIONS ====================
 function updateWriterBadges() {
     loadDatabase();
     if (!state.currentUser) return;
+    updateVerificationBadges(state.currentUser);
     
     const myTasks = state.tasks.filter(t => t.assignedTo === state.currentUser.id);
 
