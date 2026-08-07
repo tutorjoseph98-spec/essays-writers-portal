@@ -2052,10 +2052,35 @@ tr:hover td {
                             <form id="form-withdrawal" class="withdrawal-form" onsubmit="handleRequestWithdrawal(event)">
                                 <h3>Request Payout</h3>
                                 <div class="form-group">
+                                    <label for="withdraw-channel-select">Payout Channel</label>
+                                    <select id="withdraw-channel-select" required>
+                                        <option value="Bank Account">Bank Account</option>
+                                        <option value="PayPal">PayPal</option>
+                                        <option value="Payoneer">Payoneer</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
                                     <label for="withdraw-amount">Amount to Withdraw ($)</label>
                                     <input type="number" id="withdraw-amount" min="1" step="0.01" required placeholder="0.00">
                                 </div>
                                 <button type="submit" class="btn btn-primary btn-block">Submit Withdrawal Request</button>
+                            </form>
+
+                            <form id="form-payout-method" class="withdrawal-form" style="margin-top: 20px;" onsubmit="handleSavePayoutMethod(event)">
+                                <h3><i data-lucide="credit-card" class="text-indigo"></i> Payment Method Setup</h3>
+                                <div class="form-group">
+                                    <label for="payout-channel">Payout Method</label>
+                                    <select id="payout-channel" onchange="updatePayoutDetailsLabel()" required>
+                                        <option value="Bank Account">Bank Account</option>
+                                        <option value="PayPal">PayPal</option>
+                                        <option value="Payoneer">Payoneer</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label id="payout-details-label" for="payout-account-details">Bank Name & Account Number</label>
+                                    <input type="text" id="payout-account-details" required placeholder="e.g. Chase Bank - Acc #123456789">
+                                </div>
+                                <button type="submit" class="btn btn-outline btn-block" style="font-size: 0.85rem;">Save Payment Details</button>
                             </form>
                         </div>
                         <div class="balance-main glass-panel">
@@ -2134,6 +2159,48 @@ tr:hover td {
                     <button type="submit" class="btn btn-primary">Submit for Review</button>
                 </div>
             </form>
+        </div>
+    </div>
+
+    <!-- VIEW AVAILABLE TASK MODAL -->
+    <div id="modal-view-available-task" class="modal-overlay hidden">
+        <div class="modal-card glass-panel scale-up-in large-modal">
+            <div class="modal-header">
+                <h3><i data-lucide="file-text" class="text-indigo"></i> Order Details: <span id="v-task-order-num" class="text-indigo">#0000</span></h3>
+                <button class="modal-close-btn" onclick="closeViewAvailableTaskModal()">&times;</button>
+            </div>
+            <div class="modal-body scrollable-y">
+                <div class="review-details-grid" style="display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <span class="review-meta-label">Order Title</span>
+                        <h4 id="v-task-title" class="text-indigo font-bold" style="font-size: 1.2rem; margin-top: 4px;">Title</h4>
+                    </div>
+                    <div style="text-align: right;">
+                        <span class="review-meta-label">Writer Payout Rate</span>
+                        <div id="v-task-cost" class="text-emerald font-bold" style="font-size: 1.3rem;">$0.00</div>
+                    </div>
+                </div>
+                <hr class="divider" style="margin: 16px 0;">
+                <div class="task-meta-grid" style="margin-bottom: 20px;">
+                    <div class="task-meta-item"><span class="meta-label">Subject</span><span id="v-task-subject" class="meta-val">-</span></div>
+                    <div class="task-meta-item"><span class="meta-label">Paper Type</span><span id="v-task-paper-type" class="meta-val">-</span></div>
+                    <div class="task-meta-item"><span class="meta-label">Academic Level</span><span id="v-task-academic-level" class="meta-val">-</span></div>
+                    <div class="task-meta-item"><span class="meta-label">Citation Style</span><span id="v-task-citation-style" class="meta-val">-</span></div>
+                    <div class="task-meta-item"><span class="meta-label">Format</span><span id="v-task-format" class="meta-val">-</span></div>
+                    <div class="task-meta-item"><span class="meta-label">Volume</span><span id="v-task-volume" class="meta-val">-</span></div>
+                    <div class="task-meta-item"><span class="meta-label">Deadline</span><span id="v-task-deadline" class="meta-val text-amber font-bold">-</span></div>
+                </div>
+                
+                <span class="review-meta-label">Detailed Instructions & Guidelines:</span>
+                <div id="v-task-description" class="submission-text-view" style="margin-top: 8px; white-space: pre-wrap; background: rgba(0,0,0,0.25); padding: 16px; border-radius: 8px; border: 1px solid var(--border-color); min-height: 100px;">No instructions provided.</div>
+            </div>
+            <div class="modal-footer" style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+                <button type="button" class="btn btn-outline" id="v-task-chat-btn"><i data-lucide="message-square"></i> Ask Admin Question</button>
+                <div style="display: flex; gap: 10px;" id="v-task-action-btns">
+                    <button type="button" class="btn btn-outline" onclick="closeViewAvailableTaskModal()">Close</button>
+                    <button type="button" class="btn btn-primary" id="v-task-claim-btn">Claim Assignment</button>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -2503,9 +2570,17 @@ function renderWriterAvailableTasks() {
 
     availableTasks.forEach(task => {
         const isClaimedByMe = task.claims && task.claims.includes(state.currentUser.id);
-        const btnText = isClaimedByMe ? 'Claimed (Pending)' : 'Claim Assignment';
-        const btnClass = isClaimedByMe ? 'btn-outline' : 'btn-primary';
-        const disabledAttr = isClaimedByMe ? 'disabled' : '';
+        
+        let claimActionBtns = '';
+        if (isClaimedByMe) {
+            claimActionBtns = `
+                <button class="btn btn-danger btn-sm" onclick="handleCancelClaimTask('${task.id}')" title="Cancel your pending claim request"><i data-lucide="x-circle"></i> Cancel Claim</button>
+            `;
+        } else {
+            claimActionBtns = `
+                <button class="btn btn-primary btn-sm" onclick="handleClaimTask('${task.id}')"><i data-lucide="check-circle"></i> Claim Task</button>
+            `;
+        }
 
         const card = document.createElement('div');
         card.className = 'task-card glass-panel';
@@ -2515,7 +2590,7 @@ function renderWriterAvailableTasks() {
                     <span class="task-order-tag">ORDER #${task.orderNumber}</span>
                     <h4 class="task-title">${task.title}</h4>
                 </div>
-                <span class="status-badge ${isClaimedByMe ? 'claimed' : 'available'}">${isClaimedByMe ? 'claimed' : 'available'}</span>
+                <span class="status-badge ${isClaimedByMe ? 'claimed' : 'available'}">${isClaimedByMe ? 'Claimed (Pending)' : 'available'}</span>
             </div>
             <div class="task-meta-grid">
                 <div class="task-meta-item"><span class="meta-label">Subject</span><span class="meta-val">${task.subject}</span></div>
@@ -2523,9 +2598,12 @@ function renderWriterAvailableTasks() {
                 <div class="task-meta-item"><span class="meta-label">Level</span><span class="meta-val">${task.academicLevel} (${task.citationStyle})</span></div>
                 <div class="task-meta-item"><span class="meta-label">Format</span><span class="meta-val">${task.format}</span></div>
             </div>
-            <div class="task-card-footer">
+            <div class="task-card-footer" style="flex-wrap: wrap; gap: 8px;">
                 <span class="task-price">$${task.cost.toFixed(2)}</span>
-                <button class="btn ${btnClass}" ${disabledAttr} onclick="handleClaimTask('${task.id}')">${btnText}</button>
+                <div style="display: flex; gap: 6px; margin-left: auto;">
+                    <button class="btn btn-outline btn-sm" onclick="openViewAvailableTaskModal('${task.id}')"><i data-lucide="eye"></i> View Instructions</button>
+                    ${claimActionBtns}
+                </div>
             </div>
         `;
         grid.appendChild(card);
@@ -2542,8 +2620,92 @@ function handleClaimTask(taskId) {
     if (!task.claims.includes(state.currentUser.id)) {
         task.claims.push(state.currentUser.id);
         saveDatabase();
-        showToast(`Successfully claimed Order #${task.orderNumber}.`, 'success');
+        showToast(`Successfully claimed Order #${task.orderNumber}. Pending admin approval.`, 'success');
+        if (document.getElementById('modal-view-available-task') && !document.getElementById('modal-view-available-task').classList.contains('hidden')) {
+            openViewAvailableTaskModal(taskId);
+        }
         renderWriterAvailableTasks();
+    }
+}
+
+function handleCancelClaimTask(taskId) {
+    loadDatabase();
+    const task = state.tasks.find(t => t.id === taskId);
+    if (!task || !task.claims) return;
+
+    const idx = task.claims.indexOf(state.currentUser.id);
+    if (idx !== -1) {
+        task.claims.splice(idx, 1);
+        saveDatabase();
+        showToast(`Canceled claim for Order #${task.orderNumber}.`, 'info');
+        if (document.getElementById('modal-view-available-task') && !document.getElementById('modal-view-available-task').classList.contains('hidden')) {
+            openViewAvailableTaskModal(taskId);
+        }
+        renderWriterAvailableTasks();
+    }
+}
+
+let activeViewAvailableTaskId = null;
+
+function openViewAvailableTaskModal(taskId) {
+    loadDatabase();
+    const task = state.tasks.find(t => t.id === taskId);
+    if (!task) return;
+
+    activeViewAvailableTaskId = taskId;
+    document.getElementById('v-task-order-num').textContent = `#${task.orderNumber}`;
+    document.getElementById('v-task-title').textContent = task.title;
+    document.getElementById('v-task-cost').textContent = `$${task.cost.toFixed(2)}`;
+    document.getElementById('v-task-subject').textContent = task.subject;
+    document.getElementById('v-task-paper-type').textContent = task.paperType || 'Essay';
+    document.getElementById('v-task-academic-level').textContent = task.academicLevel;
+    document.getElementById('v-task-citation-style').textContent = task.citationStyle;
+    document.getElementById('v-task-format').textContent = task.format || 'APA 7th';
+    document.getElementById('v-task-volume').textContent = `${task.pages} Pages (${task.words} words)`;
+    document.getElementById('v-task-deadline').textContent = formatDeadline(task.deadline);
+    document.getElementById('v-task-description').textContent = task.description || 'No detailed instructions provided.';
+
+    // Setup Question / Chat button
+    const chatBtn = document.getElementById('v-task-chat-btn');
+    chatBtn.onclick = () => inquireAboutTask(task.id);
+
+    // Setup Claim / Unclaim Action button
+    const isClaimedByMe = task.claims && task.claims.includes(state.currentUser.id);
+    const actionBtnsContainer = document.getElementById('v-task-action-btns');
+    
+    if (isClaimedByMe) {
+        actionBtnsContainer.innerHTML = `
+            <button type="button" class="btn btn-outline" onclick="closeViewAvailableTaskModal()">Close</button>
+            <button type="button" class="btn btn-danger" onclick="handleCancelClaimTask('${task.id}')"><i data-lucide="x-circle"></i> Cancel Claim</button>
+        `;
+    } else {
+        actionBtnsContainer.innerHTML = `
+            <button type="button" class="btn btn-outline" onclick="closeViewAvailableTaskModal()">Close</button>
+            <button type="button" class="btn btn-primary" onclick="handleClaimTask('${task.id}')"><i data-lucide="check-circle"></i> Claim Assignment</button>
+        `;
+    }
+
+    document.getElementById('modal-view-available-task').classList.remove('hidden');
+    lucide.createIcons();
+}
+
+function closeViewAvailableTaskModal() {
+    document.getElementById('modal-view-available-task').classList.add('hidden');
+    activeViewAvailableTaskId = null;
+}
+
+function inquireAboutTask(taskId) {
+    loadDatabase();
+    const task = state.tasks.find(t => t.id === taskId);
+    if (!task) return;
+
+    closeViewAvailableTaskModal();
+    switchTab('w-support');
+
+    const msgInput = document.getElementById('w-support-msg-input');
+    if (msgInput) {
+        msgInput.value = `Hi Admin, I have a question regarding Order #${task.orderNumber} ("${task.title}"): `;
+        msgInput.focus();
     }
 }
 
@@ -2768,10 +2930,57 @@ function sendOrderMessage(event) {
     renderActiveOrderChatPanel();
 }
 
-// ==================== BALANCE LEDGER ====================
+// ==================== BALANCE LEDGER & PAYMENTS ====================
+function updatePayoutDetailsLabel() {
+    const channel = document.getElementById('payout-channel').value;
+    const label = document.getElementById('payout-details-label');
+    const input = document.getElementById('payout-account-details');
+
+    if (channel === 'PayPal') {
+        label.textContent = 'PayPal Email Address';
+        input.placeholder = 'yourname@paypal.com';
+    } else if (channel === 'Payoneer') {
+        label.textContent = 'Payoneer Email / Account ID';
+        input.placeholder = 'yourname@payoneer.com';
+    } else {
+        label.textContent = 'Bank Name & Account Number';
+        input.placeholder = 'e.g. Chase Bank - Acc #123456789';
+    }
+}
+
+function handleSavePayoutMethod(event) {
+    event.preventDefault();
+    loadDatabase();
+    const u = state.users.find(x => x.id === state.currentUser.id);
+    if (!u) return;
+
+    const channel = document.getElementById('payout-channel').value;
+    const details = document.getElementById('payout-account-details').value.trim();
+
+    u.payoutMethod = channel;
+    u.payoutDetails = details;
+    saveDatabase();
+
+    showToast(`Saved preferred payout method: ${channel}`, 'success');
+    renderWriterBalancePage();
+}
+
 function renderWriterBalancePage() {
     const u = state.users.find(x => x.id === state.currentUser.id);
     document.getElementById('w-balance-page-amount').textContent = `$${u.balance.toFixed(2)}`;
+
+    // Pre-fill payment method if saved
+    if (u.payoutMethod) {
+        const channelSelect = document.getElementById('payout-channel');
+        const withdrawChannelSelect = document.getElementById('withdraw-channel-select');
+        if (channelSelect) channelSelect.value = u.payoutMethod;
+        if (withdrawChannelSelect) withdrawChannelSelect.value = u.payoutMethod;
+    }
+    if (u.payoutDetails) {
+        const detailsInput = document.getElementById('payout-account-details');
+        if (detailsInput) detailsInput.value = u.payoutDetails;
+    }
+    updatePayoutDetailsLabel();
 
     const tbody = document.getElementById('w-balance-ledger-body');
     tbody.innerHTML = '';
@@ -2784,7 +2993,7 @@ function renderWriterBalancePage() {
     }));
 
     const debits = state.withdrawals.filter(w => w.userId === u.id).map(w => ({
-        id: `WD-${w.id.split('-').pop()}`, type: 'Withdrawal Payout', details: `Withdrawal request transfer`,
+        id: `WD-${w.id.split('-').pop()}`, type: 'Withdrawal Payout', details: `${w.paymentMethod || 'Payout'} (${w.paymentDetails || ''})`,
         amount: `-$${w.amount.toFixed(2)}`, amountRaw: -w.amount, date: w.timestamp, status: w.status
     }));
 
@@ -2815,6 +3024,7 @@ function handleRequestWithdrawal(event) {
     event.preventDefault();
     loadDatabase();
     const amt = parseFloat(document.getElementById('withdraw-amount').value);
+    const channel = document.getElementById('withdraw-channel-select').value;
     const u = state.users.find(x => x.id === state.currentUser.id);
 
     if (isNaN(amt) || amt <= 0 || amt > u.balance) {
@@ -2822,12 +3032,23 @@ function handleRequestWithdrawal(event) {
         return;
     }
 
+    const paymentDetails = u.payoutDetails || 'Details provided upon request';
+
     u.balance -= amt;
-    state.withdrawals.push({ id: 'wd-' + Date.now(), userId: u.id, userName: u.name, amount: amt, timestamp: new Date().toISOString(), status: 'pending' });
+    state.withdrawals.push({
+        id: 'wd-' + Date.now(),
+        userId: u.id,
+        userName: u.name,
+        amount: amt,
+        paymentMethod: channel,
+        paymentDetails: paymentDetails,
+        timestamp: new Date().toISOString(),
+        status: 'pending'
+    });
     saveDatabase();
     
     document.getElementById('form-withdrawal').reset();
-    showToast('Withdrawal request submitted.', 'success');
+    showToast(`Withdrawal request for $${amt.toFixed(2)} via ${channel} submitted.`, 'success');
     renderWriterBalancePage();
     document.getElementById('writer-header-balance').textContent = `$${u.balance.toFixed(2)}`;
 }
