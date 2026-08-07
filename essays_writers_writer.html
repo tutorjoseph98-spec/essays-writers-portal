@@ -2393,6 +2393,35 @@ function saveDatabase() {
     localStorage.setItem('ew_support_chats', JSON.stringify(state.supportChats));
 }
 
+// Cross-tab real-time sync listeners
+window.addEventListener('storage', () => {
+    loadDatabase();
+    if (state.currentUser) {
+        const updatedUser = state.users.find(u => u.id === state.currentUser.id);
+        if (updatedUser) state.currentUser = updatedUser;
+    }
+    updateWriterBadges();
+    const activeTab = document.querySelector('.nav-item.active');
+    if (activeTab) {
+        const tabId = activeTab.getAttribute('data-tab');
+        if (tabId) onTabLoad(tabId);
+    }
+});
+
+setInterval(() => {
+    loadDatabase();
+    if (state.currentUser) {
+        const updatedUser = state.users.find(u => u.id === state.currentUser.id);
+        if (updatedUser) state.currentUser = updatedUser;
+    }
+    updateWriterBadges();
+    const activeTab = document.querySelector('.nav-item.active');
+    if (activeTab) {
+        const tabId = activeTab.getAttribute('data-tab');
+        if (tabId) onTabLoad(tabId);
+    }
+}, 3000);
+
 function updateSystemTime() {
     const timeEl = document.getElementById('system-time');
     if (timeEl) {
