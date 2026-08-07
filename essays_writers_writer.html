@@ -2856,13 +2856,24 @@ function handleSubmitWork(event) {
 // ==================== DISCUSSIONS ====================
 function renderWriterOrderChats() {
     loadDatabase(); // Always fetch latest messages from storage
+    if (!state.currentUser) return;
     const list = document.getElementById('w-order-chat-list');
+    if (!list) return;
     list.innerHTML = '';
 
-    const myWorkingTasks = state.tasks.filter(t => t.assignedTo === state.currentUser.id && ['in_progress', 'in_revision', 'in_review', 'completed', 'cancelled'].includes(t.status));
+    const userId = state.currentUser.id;
+    const userEmail = state.currentUser.email;
+
+    const myWorkingTasks = state.tasks.filter(t => {
+        const isAssigned = t.assignedTo === userId || t.assignedTo === userEmail;
+        const isClaimed = t.claims && (t.claims.includes(userId) || t.claims.includes(userEmail));
+        const hasChat = state.orderChats && state.orderChats[t.id] && state.orderChats[t.id].length > 0;
+        return isAssigned || isClaimed || (hasChat && (isAssigned || isClaimed));
+    });
 
     if (myWorkingTasks.length === 0) {
-        list.innerHTML = `<div class="text-center p-3 text-muted">No chats available.</div>`;
+        list.innerHTML = `<div class="text-center p-3 text-muted">No order chat threads available.</div>`;
+        renderActiveOrderChatPanel();
         return;
     }
 
@@ -2872,6 +2883,11 @@ function renderWriterOrderChats() {
         if (!a.hasUnreadChatWriter && b.hasUnreadChatWriter) return 1;
         return b.orderNumber - a.orderNumber;
     });
+
+    // Auto-select first chat task if none selected or activeTaskId not in working tasks
+    if (!state.activeChatTaskId || !myWorkingTasks.some(t => t.id === state.activeChatTaskId)) {
+        state.activeChatTaskId = myWorkingTasks[0].id;
+    }
 
     myWorkingTasks.forEach(task => {
         const activeClass = state.activeChatTaskId === task.id ? 'active' : '';
@@ -2920,6 +2936,7 @@ function selectOrderChat(taskId) {
 function renderActiveOrderChatPanel() {
     loadDatabase(); // Always fetch latest messages from storage
     const main = document.getElementById('w-order-chat-main');
+    if (!main) return;
     if (!state.activeChatTaskId) {
         main.innerHTML = `<div class="chat-empty-state"><i data-lucide="message-square" class="large-icon"></i><h3>Select a task order thread.</h3></div>`;
         lucide.createIcons();
@@ -2927,6 +2944,12 @@ function renderActiveOrderChatPanel() {
     }
 
     const task = state.tasks.find(t => t.id === state.activeChatTaskId);
+    if (!task) {
+        main.innerHTML = `<div class="chat-empty-state"><i data-lucide="message-square" class="large-icon"></i><h3>Task not found.</h3></div>`;
+        lucide.createIcons();
+        return;
+    }
+
     const chats = state.orderChats[task.id] || [];
 
     main.innerHTML = `
@@ -2940,7 +2963,8 @@ function renderActiveOrderChatPanel() {
 
     const msgsContainer = document.getElementById('w-order-chat-messages-container');
     chats.forEach(msg => {
-        const sideClass = msg.senderId === state.currentUser.id ? 'sent' : 'received';
+        const isSentByMe = state.currentUser && (msg.senderId === state.currentUser.id || msg.senderId === state.currentUser.email);
+        const sideClass = isSentByMe ? 'sent' : 'received';
         const bubble = document.createElement('div');
         bubble.className = `chat-bubble ${sideClass}`;
         bubble.innerHTML = `<strong>${msg.senderName}</strong><br>${msg.message}<span class="chat-time">${formatChatTime(msg.timestamp)}</span>`;
@@ -3097,21 +3121,45 @@ function handleRequestWithdrawal(event) {
 
 // ==================== SUPPORT DIRECT MESSAGES ====================
 function renderWriterSupportChat() {
+    loadDatabase();
+    if (!state.currentUser) return;
     const container = document.getElementById('w-support-messages');
+    if (!container) return;
     container.innerHTML = '';
 
-    const chats = state.supportChats[state.currentUser.id] || [];
+    const userId = state.currentUser.id;
+    const userEmail = state.currentUser.email;
+
+    let chats = (state.supportChats && state.supportChats[userId]) ? state.supportChats[userId] : [];
+    if (chats.length === 0 && state.supportChats && state.supportChats[userEmail]) {
+        chats = state.supportChats[userEmail];
+    }
+
+    // Mark admin messages as read by writer
+    let updated = false;
+    chats.forEach(m => {
+        if (m.senderId === 'admin' && !m.readByWriter) {
+            m.readByWriter = true;
+            updated = true;
+        }
+    });
+
+    if (updated) {
+        saveDatabase();
+        updateWriterBadges();
+    }
 
     if (chats.length === 0) {
-        container.innerHTML = `<div class="text-center text-muted" style="margin:auto;">Hi! Initiate direct support concern messages here.</div>`;
+        container.innerHTML = `<div class="text-center text-muted" style="margin:auto; padding: 20px;">Hi ${state.currentUser.name}! Direct support chat with Admin. Send a message below to get assistance.</div>`;
         return;
     }
 
     chats.forEach(msg => {
-        const sideClass = msg.senderId === state.currentUser.id ? 'sent' : 'received';
+        const isSentByMe = msg.senderId === userId || msg.senderId === userEmail || msg.senderId === state.currentUser.name;
+        const sideClass = isSentByMe ? 'sent' : 'received';
         const bubble = document.createElement('div');
         bubble.className = `chat-bubble ${sideClass}`;
-        bubble.innerHTML = `${msg.message}<span class="chat-time">${formatChatTime(msg.timestamp)}</span>`;
+        bubble.innerHTML = `<strong>${msg.senderName || (isSentByMe ? 'You' : 'Admin')}</strong><br>${msg.message}<span class="chat-time">${formatChatTime(msg.timestamp)}</span>`;
         container.appendChild(bubble);
     });
     container.scrollTop = container.scrollHeight;
