@@ -2210,67 +2210,49 @@ tr:hover td {
                 </div>
             </div>
         </div>
-    <!-- ACCOUNT VERIFICATION & COMMITMENT FEE MODAL -->
+    <!-- ACCOUNT VERIFICATION & COMMITMENT FEE MODAL (COMPACT & SIMPLE) -->
     <div id="modal-paybill-verification" class="modal-overlay hidden">
-        <div class="modal-card large-modal" style="max-width: 680px;">
-            <div class="modal-header" style="border-bottom: 1px solid var(--border-color); padding-bottom: 14px;">
-                <div style="display: flex; align-items: center; gap: 12px;">
-                    <i data-lucide="shield-alert" class="text-amber" style="width: 32px; height: 32px;"></i>
-                    <div>
-                        <h3 style="margin: 0; font-size: 1.25rem;">Account Verification Required (KSh 600)</h3>
-                        <p class="modal-subtitle" style="margin: 4px 0 0 0; font-size: 0.85rem; color: var(--text-muted);">Commitment deposit required to separate serious writers from uncommitted users.</p>
-                    </div>
+        <div class="modal-card" style="max-width: 540px; padding: 20px;">
+            <div class="modal-header" style="border-bottom: 1px solid var(--border-color); padding-bottom: 10px; margin-bottom: 12px;">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <i data-lucide="shield-alert" class="text-amber" style="width: 24px; height: 24px;"></i>
+                    <h3 style="margin: 0; font-size: 1.15rem;">Account Verification Required (KSh 600)</h3>
                 </div>
                 <button class="modal-close" onclick="closePaybillVerificationModal()">&times;</button>
             </div>
-            <div class="modal-body" style="padding-top: 16px;">
-                <div class="alert-box amber" style="background: rgba(245, 158, 11, 0.12); border: 1px solid rgba(245, 158, 11, 0.4); padding: 16px; border-radius: 8px; margin-bottom: 20px;">
-                    <strong style="color: #fbbf24; font-size: 1rem; display: flex; align-items: center; gap: 6px;">
-                        <i data-lucide="info"></i> Why is this KSh 600 commitment payment required?
-                    </strong>
-                    <p style="margin-top: 8px; font-size: 0.88rem; line-height: 1.5; color: var(--text-main);">
-                        To maintain high quality & ensure writers are serious about doing assignments, all accounts must be verified with a <strong>KSh 600</strong> commitment fee before claiming tasks.
-                        <br><br>
-                        <strong style="color: #34d399;">💵 Instant Wallet Deposit:</strong> Upon Admin verification of your payment, <strong>KSh 600 ($4.64 USD) will be automatically deposited directly into your wallet balance</strong> for immediate withdrawal or future earnings!
-                    </p>
-                </div>
+            <div class="modal-body" style="padding: 0;">
+                <p style="font-size: 0.85rem; color: var(--text-muted); margin: 0 0 12px 0; line-height: 1.4;">
+                    To separate serious writers from uncommitted users, pay a commitment fee of <strong>KSh 600</strong>. Upon admin verification, <strong>KSh 600 ($4.64 USD) is automatically credited to your wallet balance</strong>!
+                </p>
 
-                <div class="paybill-card glass-panel" style="background: linear-gradient(135deg, rgba(99, 102, 241, 0.15), rgba(16, 185, 129, 0.15)); border: 2px solid var(--color-primary); padding: 20px; border-radius: 12px; text-align: center;">
-                    <span class="status-badge amber" style="font-size: 0.85rem; padding: 4px 14px; border-radius: 20px; font-weight: 700;">M-PESA PAYBILL PAYMENT DETAILS</span>
-                    
-                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 14px; margin-top: 16px; text-align: left;">
-                        <div style="background: rgba(0,0,0,0.35); padding: 14px; border-radius: 8px; border: 1px solid var(--border-color);">
-                            <span style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase;">Business No / Paybill</span>
-                            <div style="font-size: 1.5rem; font-weight: 800; color: #818cf8; letter-spacing: 1px; margin-top: 2px;">4077213</div>
+                <div class="paybill-card glass-panel" style="background: linear-gradient(135deg, rgba(99, 102, 241, 0.18), rgba(16, 185, 129, 0.18)); border: 1.5px solid var(--color-primary); padding: 14px; border-radius: 10px;">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; text-align: left;">
+                        <div style="background: rgba(0,0,0,0.4); padding: 10px 12px; border-radius: 6px; border: 1px solid var(--border-color);">
+                            <span style="font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; display: block;">Business / Paybill No</span>
+                            <strong style="font-size: 1.35rem; color: #818cf8; letter-spacing: 1px;">4077213</strong>
                         </div>
-                        <div style="background: rgba(0,0,0,0.35); padding: 14px; border-radius: 8px; border: 1px solid var(--border-color);">
-                            <span style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase;">Account No</span>
-                            <div style="font-size: 1.5rem; font-weight: 800; color: #10b981; letter-spacing: 1px; margin-top: 2px;">ww#63423</div>
+                        <div style="background: rgba(0,0,0,0.4); padding: 10px 12px; border-radius: 6px; border: 1px solid var(--border-color);">
+                            <span style="font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; display: block;">Account No</span>
+                            <strong style="font-size: 1.35rem; color: #10b981; letter-spacing: 1px;">ww#63423</strong>
                         </div>
-                        <div style="background: rgba(0,0,0,0.35); padding: 14px; border-radius: 8px; border: 1px solid var(--border-color);">
-                            <span style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase;">Amount to Pay</span>
-                            <div style="font-size: 1.5rem; font-weight: 800; color: #fbbf24; margin-top: 2px;">KSh 600</div>
+                        <div style="background: rgba(0,0,0,0.4); padding: 10px 12px; border-radius: 6px; border: 1px solid var(--border-color);">
+                            <span style="font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; display: block;">Amount to Pay</span>
+                            <strong style="font-size: 1.35rem; color: #fbbf24;">KSh 600</strong>
                         </div>
-                        <div style="background: rgba(0,0,0,0.35); padding: 14px; border-radius: 8px; border: 1px solid var(--border-color);">
-                            <span style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase;">Wallet Credit Refund</span>
-                            <div style="font-size: 1.5rem; font-weight: 800; color: #34d399; margin-top: 2px;">$4.64 USD</div>
+                        <div style="background: rgba(0,0,0,0.4); padding: 10px 12px; border-radius: 6px; border: 1px solid var(--border-color);">
+                            <span style="font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; display: block;">Wallet Refund</span>
+                            <strong style="font-size: 1.35rem; color: #34d399;">$4.64 USD</strong>
                         </div>
                     </div>
                 </div>
 
-                <div style="margin-top: 16px; background: rgba(0,0,0,0.2); padding: 14px; border-radius: 8px;">
-                    <h5 style="margin: 0 0 6px 0; color: var(--text-main); font-size: 0.9rem;">How to complete payment & unlock task claiming:</h5>
-                    <ol style="margin: 0 0 0 18px; font-size: 0.85rem; color: var(--text-muted); line-height: 1.5;">
-                        <li>Open M-PESA menu -> Lipa na M-PESA -> Paybill.</li>
-                        <li>Business Number: <strong style="color: #818cf8;">4077213</strong> | Account Number: <strong style="color: #10b981;">ww#63423</strong></li>
-                        <li>Amount: <strong>600</strong> -> Enter M-PESA PIN to complete payment.</li>
-                        <li>Click <strong>"I Have Paid KSh 600 - Request Verification"</strong> below so Admin verifies and deposits <strong>$4.64</strong> to your wallet balance.</li>
-                    </ol>
+                <div style="margin-top: 10px; font-size: 0.8rem; color: var(--text-muted); text-align: center;">
+                    <span>M-PESA -> Lipa na M-PESA -> Paybill -> <strong>4077213</strong> | Acc: <strong>ww#63423</strong></span>
                 </div>
             </div>
-            <div class="modal-footer" style="display: flex; justify-content: space-between; align-items: center; width: 100%; margin-top: 16px;">
-                <button type="button" class="btn btn-outline" onclick="closePaybillVerificationModal()">Close</button>
-                <button type="button" class="btn btn-primary" onclick="requestAdminVerificationNotice()"><i data-lucide="check-circle-2"></i> I Have Paid KSh 600 - Request Verification</button>
+            <div class="modal-footer" style="display: flex; justify-content: space-between; align-items: center; width: 100%; margin-top: 14px; padding-top: 10px; border-top: 1px solid var(--border-color);">
+                <button type="button" class="btn btn-outline btn-sm" onclick="closePaybillVerificationModal()">Close</button>
+                <button type="button" class="btn btn-primary btn-sm" onclick="requestAdminVerificationNotice()"><i data-lucide="check-circle-2"></i> I Have Paid KSh 600 - Request Verification</button>
             </div>
         </div>
     </div>
@@ -2791,6 +2773,7 @@ function handleClaimTask(taskId) {
 
 function openPaybillVerificationModal() {
     loadDatabase();
+    closeViewAvailableTaskModal();
     const modal = document.getElementById('modal-paybill-verification');
     if (modal) {
         modal.classList.remove('hidden');
