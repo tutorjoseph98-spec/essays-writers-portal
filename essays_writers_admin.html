@@ -1709,7 +1709,7 @@ tr:hover td {
     <div id="toast-container" class="toast-container"></div>
 
     <!-- AUTHENTICATION CONTAINER -->
-    <div id="auth-container" class="auth-container hidden">
+    <div id="auth-container" class="auth-container">
         <div class="auth-card glass-panel">
             <div class="auth-header">
                 <h1 class="logo-text">Essays Writers</h1>
@@ -1732,7 +1732,7 @@ tr:hover td {
     </div>
 
     <!-- MAIN PORTAL WRAPPER -->
-    <div id="portal-container" class="portal-container">
+    <div id="portal-container" class="portal-container hidden">
         <!-- Sidebar Navigation (Vertical) -->
         <aside class="sidebar">
             <div class="sidebar-header">
@@ -2215,15 +2215,10 @@ function initDatabase() {
     updateSystemTime();
     setInterval(updateSystemTime, 60000);
 
-    // Fail-safe auto-login: Always open Admin Control Room directly
-    state.currentUser = { id: 'admin', name: 'Administrator', email: 'admin@essayswriters.com', role: 'admin' };
-    localStorage.setItem('ew_admin_session', 'active');
-    
     const authContainer = document.getElementById('auth-container');
     const portalContainer = document.getElementById('portal-container');
-    if (authContainer) authContainer.classList.add('hidden');
-    if (portalContainer) portalContainer.classList.remove('hidden');
-    switchTab('a-users');
+    if (authContainer) authContainer.classList.remove('hidden');
+    if (portalContainer) portalContainer.classList.add('hidden');
 }
 
 function loadDatabase() {
