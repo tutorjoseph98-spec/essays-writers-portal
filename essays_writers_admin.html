@@ -2425,29 +2425,6 @@ function updateAdminBadges() {
         { id: 'a-cnt-cancelled', cnt: cntCancelled }
     ];
 
-    subTabBadges.forEach(item => {
-        const el = document.getElementById(item.id);
-        if (el) {
-            el.textContent = item.cnt;
-            el.style.display = item.cnt > 0 ? 'inline-flex' : 'none';
-        }
-    });
-
-    const elReview = document.getElementById('a-cnt-review');
-    if (elReview) {
-        elReview.textContent = cntReview;
-        const unreadReview = state.tasks.filter(t => t.status === 'in_review' && t.hasUnreadSubmission).length;
-        if (unreadReview > 0) {
-            elReview.style.background = '#ef4444';
-            elReview.textContent = cntReview + ' NEW';
-            elReview.style.display = 'inline-flex';
-        } else {
-            elReview.style.background = '';
-            elReview.style.display = cntReview > 0 ? 'inline-flex' : 'none';
-        }
-    }
-}
-
 // ==================== ADMIN CORE OPERATIONS ====================
 function renderAdminUserControl() {
     const tbody = document.getElementById('a-users-table-body');
