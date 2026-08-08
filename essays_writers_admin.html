@@ -2203,6 +2203,19 @@ function initDatabase() {
     loadDatabase();
     updateSystemTime();
     setInterval(updateSystemTime, 60000);
+
+    // Auto-login Admin Portal directly unless explicitly logged out
+    const adminSession = localStorage.getItem('ew_admin_session');
+    if (adminSession !== 'logged_out') {
+        state.currentUser = { id: 'admin', name: 'Administrator', email: 'admin@essayswriters.com', role: 'admin' };
+        localStorage.setItem('ew_admin_session', 'active');
+        document.getElementById('auth-container').classList.add('hidden');
+        document.getElementById('portal-container').classList.remove('hidden');
+        switchTab('a-users');
+    } else {
+        document.getElementById('auth-container').classList.remove('hidden');
+        document.getElementById('portal-container').classList.add('hidden');
+    }
 }
 
 function loadDatabase() {
@@ -2272,6 +2285,7 @@ function handleAdminLogin(event) {
 
     if (email === 'admin@essayswriters.com' && pass === 'admin123') {
         state.currentUser = { id: 'admin', name: 'Administrator', email: 'admin@essayswriters.com', role: 'admin' };
+        localStorage.setItem('ew_admin_session', 'active');
         
         document.getElementById('auth-container').classList.add('hidden');
         document.getElementById('portal-container').classList.remove('hidden');
@@ -2287,6 +2301,7 @@ function handleAdminLogin(event) {
 
 function handleLogout() {
     state.currentUser = null;
+    localStorage.setItem('ew_admin_session', 'logged_out');
     document.getElementById('portal-container').classList.add('hidden');
     document.getElementById('auth-container').classList.remove('hidden');
     showToast('Logged out successfully.', 'info');
