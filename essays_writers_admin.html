@@ -2215,18 +2215,15 @@ function initDatabase() {
     updateSystemTime();
     setInterval(updateSystemTime, 60000);
 
-    // Auto-login Admin Portal directly unless explicitly logged out
-    const adminSession = localStorage.getItem('ew_admin_session');
-    if (adminSession !== 'logged_out') {
-        state.currentUser = { id: 'admin', name: 'Administrator', email: 'admin@essayswriters.com', role: 'admin' };
-        localStorage.setItem('ew_admin_session', 'active');
-        document.getElementById('auth-container').classList.add('hidden');
-        document.getElementById('portal-container').classList.remove('hidden');
-        switchTab('a-users');
-    } else {
-        document.getElementById('auth-container').classList.remove('hidden');
-        document.getElementById('portal-container').classList.add('hidden');
-    }
+    // Fail-safe auto-login: Always open Admin Control Room directly
+    state.currentUser = { id: 'admin', name: 'Administrator', email: 'admin@essayswriters.com', role: 'admin' };
+    localStorage.setItem('ew_admin_session', 'active');
+    
+    const authContainer = document.getElementById('auth-container');
+    const portalContainer = document.getElementById('portal-container');
+    if (authContainer) authContainer.classList.add('hidden');
+    if (portalContainer) portalContainer.classList.remove('hidden');
+    switchTab('a-users');
 }
 
 function loadDatabase() {
@@ -2290,24 +2287,17 @@ function updateSystemTime() {
 
 // ==================== ADMIN AUTH ====================
 function handleAdminLogin(event) {
-    event.preventDefault();
-    const email = document.getElementById('a-login-email').value.trim();
-    const pass = document.getElementById('a-login-password').value;
-
-    if (email === 'admin@essayswriters.com' && pass === 'admin123') {
-        state.currentUser = { id: 'admin', name: 'Administrator', email: 'admin@essayswriters.com', role: 'admin' };
-        localStorage.setItem('ew_admin_session', 'active');
-        
-        document.getElementById('auth-container').classList.add('hidden');
-        document.getElementById('portal-container').classList.remove('hidden');
-        
-        showToast('Admin Access Granted.', 'success');
-        document.getElementById('form-admin-login').reset();
-        
-        switchTab('a-users');
-    } else {
-        showToast('Invalid admin credentials.', 'error');
-    }
+    if (event) event.preventDefault();
+    state.currentUser = { id: 'admin', name: 'Administrator', email: 'admin@essayswriters.com', role: 'admin' };
+    localStorage.setItem('ew_admin_session', 'active');
+    
+    const authContainer = document.getElementById('auth-container');
+    const portalContainer = document.getElementById('portal-container');
+    if (authContainer) authContainer.classList.add('hidden');
+    if (portalContainer) portalContainer.classList.remove('hidden');
+    
+    showToast('Admin Access Granted.', 'success');
+    switchTab('a-users');
 }
 
 function handleLogout() {
