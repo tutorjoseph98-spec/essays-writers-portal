@@ -2274,6 +2274,17 @@ let state = {
     recoveryVerifiedUser: null
 };
 
+function safeCreateIcons() {
+    try {
+        if (typeof lucide !== 'undefined' && lucide && typeof lucide.createIcons === 'function') {
+            lucide.createIcons();
+        }
+    } catch (e) {
+        console.warn('Lucide icon render warning:', e);
+    }
+}
+
+
 // Initial Mock Seed Data (Matching Admin database setup)
 const MOCK_USERS = [
     { id: 'user-alex', name: 'Alex Rivera', email: 'alex@writers.com', phone: '+1234567890', password: 'password123', balance: 15.40, completedTasksCount: 2, isVerified: true },
@@ -2678,7 +2689,7 @@ function renderWriterDashboard() {
         `;
         tbody.appendChild(tr);
     });
-    lucide.createIcons();
+    safeCreateIcons();
 }
 
 function renderWriterAvailableTasks() {
@@ -2742,7 +2753,7 @@ function renderWriterAvailableTasks() {
         `;
         grid.appendChild(card);
     });
-    lucide.createIcons();
+    safeCreateIcons();
 }
 
 function handleClaimTask(taskId) {
@@ -2777,7 +2788,7 @@ function openPaybillVerificationModal() {
     const modal = document.getElementById('modal-paybill-verification');
     if (modal) {
         modal.classList.remove('hidden');
-        lucide.createIcons();
+        safeCreateIcons();
     }
 }
 
@@ -2871,7 +2882,7 @@ function openViewAvailableTaskModal(taskId) {
     }
 
     document.getElementById('modal-view-available-task').classList.remove('hidden');
-    lucide.createIcons();
+    safeCreateIcons();
 }
 
 function closeViewAvailableTaskModal() {
@@ -2964,7 +2975,7 @@ function renderWriterMyOrders() {
         `;
         grid.appendChild(card);
     });
-    lucide.createIcons();
+    safeCreateIcons();
 }
 
 function openSubmitWorkModal(taskId) {
@@ -3127,14 +3138,14 @@ function renderActiveOrderChatPanel() {
     if (!main) return;
     if (!state.activeChatTaskId) {
         main.innerHTML = `<div class="chat-empty-state"><i data-lucide="message-square" class="large-icon"></i><h3>Select a task order thread.</h3></div>`;
-        lucide.createIcons();
+        safeCreateIcons();
         return;
     }
 
     const task = state.tasks.find(t => t.id === state.activeChatTaskId || String(t.id) === String(state.activeChatTaskId) || String(t.orderNumber) === String(state.activeChatTaskId));
     if (!task) {
         main.innerHTML = `<div class="chat-empty-state"><i data-lucide="message-square" class="large-icon"></i><h3>Task not found.</h3></div>`;
-        lucide.createIcons();
+        safeCreateIcons();
         return;
     }
 
@@ -3166,7 +3177,7 @@ function renderActiveOrderChatPanel() {
         });
         msgsContainer.scrollTop = msgsContainer.scrollHeight;
     }
-    lucide.createIcons();
+    safeCreateIcons();
 }
 
 function sendOrderMessage(event) {
@@ -3406,7 +3417,7 @@ function showToast(message, type = 'info') {
 
     toast.innerHTML = `<i data-lucide="${iconName}"></i><span>${message}</span>`;
     container.appendChild(toast);
-    lucide.createIcons();
+    safeCreateIcons();
 
     setTimeout(() => {
         toast.style.animation = 'fadeIn 0.3s ease-out reverse';
