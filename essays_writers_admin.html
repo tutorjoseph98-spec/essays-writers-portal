@@ -2134,6 +2134,17 @@ let state = {
     activeSupportUserId: null
 };
 
+function safeCreateIcons() {
+    try {
+        if (typeof lucide !== 'undefined' && lucide && typeof lucide.createIcons === 'function') {
+            lucide.createIcons();
+        }
+    } catch (e) {
+        console.warn('Lucide icon render warning:', e);
+    }
+}
+
+
 // Initial Mock Seed Data
 const MOCK_USERS = [
     { id: 'user-alex', name: 'Alex Rivera', email: 'alex@writers.com', phone: '+1234567890', password: 'password123', balance: 15.40, completedTasksCount: 2 },
@@ -2495,7 +2506,7 @@ function renderAdminUserControl() {
         `;
         tbody.appendChild(tr);
     });
-    lucide.createIcons();
+    safeCreateIcons();
 }
 
 function handleVerifyUserAccount(userId) {
@@ -2603,7 +2614,7 @@ function renderAdminManageTasks() {
             <i data-lucide="folder" class="large-icon"></i>
             <h3>No tasks found under the "${state.currentManageTasksTab}" category.</h3>
         </div>`;
-        lucide.createIcons();
+        safeCreateIcons();
         return;
     }
 
@@ -2663,7 +2674,7 @@ function renderAdminManageTasks() {
         `;
         grid.appendChild(card);
     });
-    lucide.createIcons();
+    safeCreateIcons();
 }
 
 function openCreateTaskModal() {
@@ -2680,7 +2691,7 @@ function openCreateTaskModal() {
     calculateTaskCostsAndWords();
     
     document.getElementById('modal-create-task').classList.remove('hidden');
-    lucide.createIcons();
+    safeCreateIcons();
 }
 
 function closeCreateTaskModal() {
@@ -2738,7 +2749,7 @@ function renderAdminPendingClaims() {
 
     if (claimedTasks.length === 0) {
         list.innerHTML = `<div class="chat-empty-state"><i data-lucide="user-check" class="large-icon"></i><h3>No claim requests pending.</h3></div>`;
-        lucide.createIcons();
+        safeCreateIcons();
         return;
     }
 
@@ -2782,7 +2793,7 @@ function renderAdminPendingClaims() {
         `;
         list.appendChild(card);
     });
-    lucide.createIcons();
+    safeCreateIcons();
 }
 
 function handleHireWriter(taskId, userId) {
@@ -2867,14 +2878,14 @@ function renderAdminActiveOrderChatPanel() {
     const main = document.getElementById('a-order-chat-main');
     if (!state.activeChatTaskId) {
         main.innerHTML = `<div class="chat-empty-state"><i data-lucide="message-square" class="large-icon"></i><h3>Select an active order chat.</h3></div>`;
-        lucide.createIcons();
+        safeCreateIcons();
         return;
     }
 
     const task = state.tasks.find(t => t.id === state.activeChatTaskId || String(t.id) === String(state.activeChatTaskId) || String(t.orderNumber) === String(state.activeChatTaskId));
     if (!task) {
         main.innerHTML = `<div class="chat-empty-state"><i data-lucide="message-square" class="large-icon"></i><h3>Task not found.</h3></div>`;
-        lucide.createIcons();
+        safeCreateIcons();
         return;
     }
 
@@ -2905,7 +2916,7 @@ function renderAdminActiveOrderChatPanel() {
         });
         msgsContainer.scrollTop = msgsContainer.scrollHeight;
     }
-    lucide.createIcons();
+    safeCreateIcons();
 }
 
 function sendOrderMessageAdmin(event) {
@@ -2971,7 +2982,7 @@ function renderAdminActiveSupportPanel() {
     const main = document.getElementById('a-support-chat-main');
     if (!state.activeSupportUserId) {
         main.innerHTML = `<div class="chat-empty-state"><i data-lucide="user" class="large-icon"></i><h3>Select a writer to support.</h3></div>`;
-        lucide.createIcons();
+        safeCreateIcons();
         return;
     }
 
@@ -2996,7 +3007,7 @@ function renderAdminActiveSupportPanel() {
         msgsContainer.appendChild(bubble);
     });
     msgsContainer.scrollTop = msgsContainer.scrollHeight;
-    lucide.createIcons();
+    safeCreateIcons();
 }
 
 function sendSupportMessageAdmin(event) {
@@ -3130,7 +3141,7 @@ function openReviewModal(taskId) {
     document.getElementById('btn-review-revision-submit').classList.add('hidden');
 
     document.getElementById('modal-review-task').classList.remove('hidden');
-    lucide.createIcons();
+    safeCreateIcons();
 }
 
 function closeReviewModal() {
@@ -3206,7 +3217,7 @@ function showToast(message, type = 'info') {
 
     toast.innerHTML = `<i data-lucide="${iconName}"></i><span>${message}</span>`;
     container.appendChild(toast);
-    lucide.createIcons();
+    safeCreateIcons();
 
     setTimeout(() => {
         toast.style.animation = 'fadeIn 0.3s ease-out reverse';
