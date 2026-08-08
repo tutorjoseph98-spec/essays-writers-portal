@@ -2356,18 +2356,10 @@ function initDatabase() {
     updateSystemTime();
     setInterval(updateSystemTime, 60000);
 
-    // Auto log-in ONLY if there's a saved session from a previous login
-    const savedUserId = localStorage.getItem('ew_session_user_id');
-    const userToLogin = savedUserId ? state.users.find(u => u.id === savedUserId) : null;
-
-    if (userToLogin) {
-        loginAs(userToLogin);
-    } else {
-        // No saved session — show login screen
-        document.getElementById('auth-container').classList.remove('hidden');
-        document.getElementById('portal-container').classList.add('hidden');
-        setAuthView('writer-login');
-    }
+    // Always show login screen on load
+    document.getElementById('auth-container').classList.remove('hidden');
+    document.getElementById('portal-container').classList.add('hidden');
+    setAuthView('writer-login');
 }
 
 function loadDatabase() {
