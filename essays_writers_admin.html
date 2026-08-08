@@ -2407,6 +2407,7 @@ function updateAdminBadges() {
         badgeWithdrawals.textContent = pendingWithdrawals;
         badgeWithdrawals.style.display = pendingWithdrawals > 0 ? 'inline-flex' : 'none';
     }
+}
 
     const cntAll = state.tasks.length;
     const cntAvail = state.tasks.filter(t => t.status === 'available').length;
@@ -2447,7 +2448,7 @@ function updateAdminBadges() {
             elReview.style.display = cntReview > 0 ? 'inline-flex' : 'none';
         }
     }
-}
+
 
 // ==================== ADMIN CORE OPERATIONS ====================
 function renderAdminUserControl() {
