@@ -10,6 +10,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
     <style>
 /* ==========================================================================
    ESSAYS WRITERS - PREMIUM DESIGN STYLESHEET
@@ -2134,6 +2137,30 @@ let state = {
     activeSupportUserId: null
 };
 
+// Firebase Configuration & Initialization
+const firebaseConfig = {
+  apiKey: "AIzaSyB18bZeKx7cuxN-IDvtQB8-OFroqtGsxQg",
+  authDomain: "essayswriters.firebaseapp.com",
+  databaseURL: "https://essayswriters-default-rtdb.firebaseio.com",
+  projectId: "essayswriters",
+  storageBucket: "essayswriters.firebasestorage.app",
+  messagingSenderId: "976222072116",
+  appId: "1:976222072116:web:7d43826f417bea444c8961",
+  measurementId: "G-LF0TV885LF"
+};
+
+let db = null;
+try {
+    if (typeof firebase !== 'undefined') {
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+        }
+        db = firebase.database();
+    }
+} catch (e) {
+    console.warn("Firebase Init Error:", e);
+}
+
 function safeCreateIcons() {
     try {
         if (typeof lucide !== 'undefined' && lucide && typeof lucide.createIcons === 'function') {
@@ -2215,6 +2242,35 @@ function initDatabase() {
     updateSystemTime();
     setInterval(updateSystemTime, 60000);
 
+    // Setup Firebase Realtime Sync Listener
+    if (db) {
+        db.ref('appData').on('value', (snapshot) => {
+            const data = snapshot.val();
+            if (data) {
+                state.users = data.users || [];
+                state.tasks = data.tasks || [];
+                state.withdrawals = data.withdrawals || [];
+                state.orderChats = data.orderChats || {};
+                state.supportChats = data.supportChats || {};
+
+                localStorage.setItem('ew_users', JSON.stringify(state.users));
+                localStorage.setItem('ew_tasks', JSON.stringify(state.tasks));
+                localStorage.setItem('ew_withdrawals', JSON.stringify(state.withdrawals));
+                localStorage.setItem('ew_order_chats', JSON.stringify(state.orderChats));
+                localStorage.setItem('ew_support_chats', JSON.stringify(state.supportChats));
+
+                updateAdminBadges();
+                const activeTab = document.querySelector('.nav-item.active');
+                if (activeTab) {
+                    const tabId = activeTab.getAttribute('data-tab');
+                    onTabLoad(tabId);
+                }
+            } else {
+                saveDatabase();
+            }
+        });
+    }
+
     const authContainer = document.getElementById('auth-container');
     const portalContainer = document.getElementById('portal-container');
     if (authContainer) authContainer.classList.remove('hidden');
@@ -2235,6 +2291,16 @@ function saveDatabase() {
     localStorage.setItem('ew_withdrawals', JSON.stringify(state.withdrawals));
     localStorage.setItem('ew_order_chats', JSON.stringify(state.orderChats));
     localStorage.setItem('ew_support_chats', JSON.stringify(state.supportChats));
+
+    if (db) {
+        db.ref('appData').set({
+            users: state.users,
+            tasks: state.tasks,
+            withdrawals: state.withdrawals,
+            orderChats: state.orderChats,
+            supportChats: state.supportChats
+        }).catch(err => console.error("Firebase save error:", err));
+    }
 }
 
 // Cross-tab real-time sync listeners
