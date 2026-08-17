@@ -2106,6 +2106,7 @@ tr:hover td {
             </div>
             <div class="modal-footer flex-end">
                 <button class="btn btn-outline" onclick="closeReviewModal()">Close</button>
+                <button class="btn btn-danger" onclick="handlePermanentlyDeleteTask(activeReviewTaskId)" title="Permanently delete this order"><i data-lucide="trash-2"></i> Delete Order</button>
                 <button class="btn btn-danger" id="btn-review-cancel" onclick="handleReviewAction('cancel')">Cancel Task</button>
                 <button class="btn btn-warning" id="btn-review-revision-toggle" onclick="toggleRevisionInput()">Send to Revision</button>
                 <button class="btn btn-warning hidden" id="btn-review-revision-submit" onclick="handleReviewAction('revision')">Submit Feedback</button>
@@ -2679,9 +2680,17 @@ function renderAdminManageTasks() {
 
         let actionBtnHTML = '';
         if (task.status === 'in_review') {
-            actionBtnHTML = `<button class="btn btn-emerald btn-block" style="margin-top:10px;" onclick="openReviewModal('${task.id}')"><i data-lucide="eye"></i> Review Submission</button>`;
+            actionBtnHTML = `
+                <div style="display:flex; gap:6px; margin-top:10px;">
+                    <button class="btn btn-emerald" style="flex:1;" onclick="openReviewModal('${task.id}')"><i data-lucide="eye"></i> Review Submission</button>
+                    <button class="btn btn-danger" onclick="handlePermanentlyDeleteTask('${task.id}')" title="Permanently Delete Order"><i data-lucide="trash-2"></i> Delete</button>
+                </div>`;
         } else {
-            actionBtnHTML = `<button class="btn btn-outline btn-block" style="margin-top:10px;" onclick="switchTab('a-order-chats'); selectAdminOrderChat('${task.id}');"><i data-lucide="message-square"></i> Open Chats</button>`;
+            actionBtnHTML = `
+                <div style="display:flex; gap:6px; margin-top:10px;">
+                    <button class="btn btn-outline" style="flex:1;" onclick="switchTab('a-order-chats'); selectAdminOrderChat('${task.id}');"><i data-lucide="message-square"></i> Open Chats</button>
+                    <button class="btn btn-danger" onclick="handlePermanentlyDeleteTask('${task.id}')" title="Permanently Delete Order"><i data-lucide="trash-2"></i> Delete</button>
+                </div>`;
         }
 
         const card = document.createElement('div');
@@ -3205,6 +3214,44 @@ function toggleRevisionInput() {
     document.getElementById('review-revision-box').classList.remove('hidden');
     document.getElementById('btn-review-revision-toggle').classList.add('hidden');
     document.getElementById('btn-review-revision-submit').classList.remove('hidden');
+}
+
+function handlePermanentlyDeleteTask(taskId) {
+    loadDatabase();
+    if (!taskId) return;
+    const task = state.tasks.find(t => t.id === taskId);
+    if (!task) return;
+
+    if (!confirm(`Are you sure you want to PERMANENTLY DELETE Order #${task.orderNumber} ("${task.title}")?
+
+This action cannot be undone and will remove the order from both Admin and Writer portals.`)) {
+        return;
+    }
+
+    // 1. Remove task from state.tasks
+    state.tasks = state.tasks.filter(t => t.id !== taskId);
+
+    // 2. Remove order chats for this task if any
+    if (state.orderChats && state.orderChats[taskId]) {
+        delete state.orderChats[taskId];
+    }
+
+    // 3. Save database (Syncs automatically to Firebase & localStorage)
+    saveDatabase();
+
+    // 4. Close review modal if open
+    if (typeof closeReviewModal === 'function') {
+        closeReviewModal();
+    }
+
+    showToast(`Order #${task.orderNumber} deleted permanently.`, 'success');
+    updateAdminBadges();
+    const activeTab = document.querySelector('.nav-item.active');
+    if (activeTab) {
+        onTabLoad(activeTab.getAttribute('data-tab'));
+    } else {
+        renderAdminManageTasks();
+    }
 }
 
 function handleReviewAction(actionType) {
