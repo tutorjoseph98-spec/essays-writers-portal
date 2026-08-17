@@ -2567,9 +2567,8 @@ function handleWriterRegister(event) {
     saveDatabase();
     
     loginAs(newUser);
-    showToast('Registration successful! Please pay KSh 600 commitment fee to verify your account and start claiming tasks.', 'info');
+    showToast('Registration successful! Browse available tasks and view instructions. Click "Claim Task" when ready to verify your account.', 'success');
     document.getElementById('form-writer-register').reset();
-    openPaybillVerificationModal();
 }
 
 function handleVerifyRecovery(event) {
