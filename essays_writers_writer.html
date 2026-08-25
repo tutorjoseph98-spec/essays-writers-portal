@@ -2951,12 +2951,20 @@ function openViewAvailableTaskModal(taskId) {
         `;
     }
 
-    document.getElementById('modal-view-available-task').classList.remove('hidden');
-    safeCreateIcons();
+    const modal = document.getElementById('modal-view-available-task');
+    if (modal) {
+        modal.classList.remove('hidden');
+        modal.setAttribute('style', 'display: flex !important; z-index: 9000 !important; position: fixed !important; top: 0; left: 0; right: 0; bottom: 0; align-items: center; justify-content: center; background: rgba(0,0,0,0.85);');
+        safeCreateIcons();
+    }
 }
 
 function closeViewAvailableTaskModal() {
-    document.getElementById('modal-view-available-task').classList.add('hidden');
+    const modal = document.getElementById('modal-view-available-task');
+    if (modal) {
+        modal.classList.add('hidden');
+        modal.style.display = 'none';
+    }
     activeViewAvailableTaskId = null;
 }
 
