@@ -2175,7 +2175,7 @@ function safeCreateIcons() {
 
 // Initial Mock Seed Data
 const MOCK_USERS = [
-    { id: 'user-alex', name: 'Alex Rivera', email: 'alex@writers.com', phone: '+1234567890', password: 'password123', balance: 15.40, completedTasksCount: 2, isVerified: true },
+    { id: 'user-alex', name: 'Alex Rivera', email: 'alex@writers.com', phone: '+1234567890', password: 'password123', balance: 0.00, completedTasksCount: 0, isVerified: false, verificationRequested: false },
     { id: 'user-sarah', name: 'Sarah Connor', email: 'sarah@writers.com', phone: '+1987654321', password: 'password123', balance: 0.00, completedTasksCount: 0, isVerified: false, verificationRequested: false }
 ];
 
@@ -2528,7 +2528,7 @@ function renderAdminUserControl() {
 
     state.users.forEach(u => {
         const comps = state.tasks.filter(t => t.assignedTo === u.id && t.status === 'completed').length;
-        const isVer = u.isVerified !== false;
+        const isVer = u.isVerified === true;
         const verBadgeHTML = isVer
             ? `<span class="status-badge green">✓ Verified</span>`
             : (u.verificationRequested 
