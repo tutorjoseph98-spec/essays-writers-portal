@@ -1,0 +1,8 @@
+{
+  "cleanUrls": true,
+  "rewrites": [
+    { "source": "/", "destination": "/index.html" },
+    { "source": "/admin", "destination": "/essays_writers_admin.html" },
+    { "source": "/writer", "destination": "/essays_writers_writer.html" }
+  ]
+}
