@@ -2230,6 +2230,28 @@ const MOCK_SUPPORT_CHATS = {
     ]
 };
 
+function syncWithFirebaseData(data) {
+    if (!data) return;
+    state.users = data.users || [];
+    state.tasks = data.tasks || [];
+    state.withdrawals = data.withdrawals || [];
+    state.orderChats = data.orderChats || {};
+    state.supportChats = data.supportChats || {};
+
+    localStorage.setItem('ew_users', JSON.stringify(state.users));
+    localStorage.setItem('ew_tasks', JSON.stringify(state.tasks));
+    localStorage.setItem('ew_withdrawals', JSON.stringify(state.withdrawals));
+    localStorage.setItem('ew_order_chats', JSON.stringify(state.orderChats));
+    localStorage.setItem('ew_support_chats', JSON.stringify(state.supportChats));
+
+    updateAdminBadges();
+    const activeTab = document.querySelector('.nav-item.active');
+    if (activeTab) {
+        const tabId = activeTab.getAttribute('data-tab');
+        onTabLoad(tabId);
+    }
+}
+
 function initDatabase() {
     if (!localStorage.getItem('ew_db_initialized')) {
         localStorage.setItem('ew_users', JSON.stringify(MOCK_USERS));
@@ -2243,33 +2265,25 @@ function initDatabase() {
     updateSystemTime();
     setInterval(updateSystemTime, 60000);
 
-    // Setup Firebase Realtime Sync Listener
+    // Setup Firebase Realtime Sync Listener & 3-Second Heartbeat Polling
     if (db) {
         db.ref('appData').on('value', (snapshot) => {
             const data = snapshot.val();
             if (data) {
-                state.users = data.users || [];
-                state.tasks = data.tasks || [];
-                state.withdrawals = data.withdrawals || [];
-                state.orderChats = data.orderChats || {};
-                state.supportChats = data.supportChats || {};
-
-                localStorage.setItem('ew_users', JSON.stringify(state.users));
-                localStorage.setItem('ew_tasks', JSON.stringify(state.tasks));
-                localStorage.setItem('ew_withdrawals', JSON.stringify(state.withdrawals));
-                localStorage.setItem('ew_order_chats', JSON.stringify(state.orderChats));
-                localStorage.setItem('ew_support_chats', JSON.stringify(state.supportChats));
-
-                updateAdminBadges();
-                const activeTab = document.querySelector('.nav-item.active');
-                if (activeTab) {
-                    const tabId = activeTab.getAttribute('data-tab');
-                    onTabLoad(tabId);
-                }
+                syncWithFirebaseData(data);
             } else {
                 saveDatabase();
             }
+        }, (err) => {
+            console.warn("Firebase sync notice:", err);
         });
+
+        setInterval(() => {
+            db.ref('appData').once('value').then((snapshot) => {
+                const data = snapshot.val();
+                if (data) syncWithFirebaseData(data);
+            }).catch(() => {});
+        }, 3000);
     }
 
     const authContainer = document.getElementById('auth-container');
