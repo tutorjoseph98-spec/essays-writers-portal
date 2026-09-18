@@ -2230,13 +2230,37 @@ const MOCK_SUPPORT_CHATS = {
     ]
 };
 
+function mergeUserData(currentUsers, incomingUsers) {
+    const map = new Map();
+    (currentUsers || []).forEach(u => {
+        if (u && (u.id || u.email)) {
+            const key = (u.id || u.email).toLowerCase();
+            map.set(key, { ...u });
+        }
+    });
+    (incomingUsers || []).forEach(u => {
+        if (u && (u.id || u.email)) {
+            const key = (u.id || u.email).toLowerCase();
+            const existing = map.get(key) || {};
+            map.set(key, {
+                ...existing,
+                ...u,
+                balance: u.balance !== undefined ? u.balance : (existing.balance || 0),
+                completedTasksCount: u.completedTasksCount !== undefined ? u.completedTasksCount : (existing.completedTasksCount || 0),
+                isVerified: u.isVerified !== undefined ? u.isVerified : existing.isVerified
+            });
+        }
+    });
+    return Array.from(map.values());
+}
+
 function syncWithFirebaseData(data) {
     if (!data) return;
-    state.users = data.users || [];
-    state.tasks = data.tasks || [];
-    state.withdrawals = data.withdrawals || [];
-    state.orderChats = data.orderChats || {};
-    state.supportChats = data.supportChats || {};
+    state.users = mergeUserData(state.users, data.users);
+    state.tasks = data.tasks || state.tasks || [];
+    state.withdrawals = data.withdrawals || state.withdrawals || [];
+    state.orderChats = data.orderChats || state.orderChats || {};
+    state.supportChats = data.supportChats || state.supportChats || {};
 
     localStorage.setItem('ew_users', JSON.stringify(state.users));
     localStorage.setItem('ew_tasks', JSON.stringify(state.tasks));
@@ -2308,13 +2332,27 @@ function saveDatabase() {
     localStorage.setItem('ew_support_chats', JSON.stringify(state.supportChats));
 
     if (db) {
-        db.ref('appData').set({
-            users: state.users,
-            tasks: state.tasks,
-            withdrawals: state.withdrawals,
-            orderChats: state.orderChats,
-            supportChats: state.supportChats
-        }).catch(err => console.error("Firebase save error:", err));
+        db.ref('appData/users').once('value').then((snapshot) => {
+            const remoteUsers = snapshot.val() || [];
+            state.users = mergeUserData(remoteUsers, state.users);
+            localStorage.setItem('ew_users', JSON.stringify(state.users));
+
+            db.ref('appData').set({
+                users: state.users,
+                tasks: state.tasks,
+                withdrawals: state.withdrawals,
+                orderChats: state.orderChats,
+                supportChats: state.supportChats
+            }).catch(err => console.error("Firebase save error:", err));
+        }).catch(() => {
+            db.ref('appData').set({
+                users: state.users,
+                tasks: state.tasks,
+                withdrawals: state.withdrawals,
+                orderChats: state.orderChats,
+                supportChats: state.supportChats
+            }).catch(err => console.error("Firebase save error:", err));
+        });
     }
 }
 
